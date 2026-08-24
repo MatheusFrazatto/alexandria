@@ -155,8 +155,13 @@ export function validateSite() {
     errors.push("A cópia narrativa não pode ser truncada.");
   }
 
-  if (!/aria-hidden="true"[^>]*>\s*Al\s*</i.test(html)) {
-    errors.push("Os glifos monumentais Al devem ser decorativos.");
+  const specimenStart = html.indexOf('class="specimen"');
+  const specimenEnd = html.indexOf("</section>", specimenStart);
+  const specimen = specimenStart >= 0 && specimenEnd >= 0 ? html.slice(specimenStart, specimenEnd) : "";
+  const specimenGlyphs = [...specimen.matchAll(/class="specimen-state__glyph"\s+aria-hidden="true">([^<]+)<\/span>/g)]
+    .map((match) => match[1]);
+  if (JSON.stringify(specimenGlyphs) !== JSON.stringify(["A", "L", "E", "X"])) {
+    errors.push("O espécime monumental deve soletrar ALEX em quatro glifos decorativos.");
   }
 
   if (!/aria-label="Alexandria"/i.test(html)) {

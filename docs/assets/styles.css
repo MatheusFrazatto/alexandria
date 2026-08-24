@@ -21,7 +21,7 @@
   --page-pad: clamp(1.25rem, 1.45vw, 1.5rem);
   --display: clamp(2.35rem, 3.12vw, 3.25rem);
   --section-title: clamp(2.3rem, 4.5vw, 5.4rem);
-  --glyph-scale: 0.58;
+  --glyph-scale: 0.82;
   --hairline: 1px;
 }
 
@@ -262,16 +262,17 @@ p, dd { overflow-wrap: break-word; }
 .specimen-state__glyph {
   display: flex;
   align-items: flex-end;
-  padding-left: clamp(0.5rem, 1.5vw, 1.5rem);
+  justify-content: center;
+  padding-inline: clamp(0.25rem, 0.8vw, 0.75rem);
   overflow: visible;
   color: var(--ink);
   font-size: clamp(18rem, 28vw, 29rem);
   font-variation-settings: "wght" var(--glyph-weight);
   font-weight: var(--glyph-weight);
-  letter-spacing: -0.075em;
+  letter-spacing: 0;
   line-height: 0.72;
   transform: scaleX(var(--glyph-scale));
-  transform-origin: left bottom;
+  transform-origin: center bottom;
   white-space: nowrap;
   animation: calibrate 950ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -496,7 +497,7 @@ p, dd { overflow-wrap: break-word; }
   .specimen::before, .specimen::after, .type-guide--x::before, .type-guides { display: none; }
   .specimen__states { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .specimen-state { grid-template-rows: 16rem 6.5rem; border-top: 1px dashed var(--guide); }
-  .specimen-state__glyph { padding-left: 0.65rem; font-size: clamp(10rem, 53vw, 15rem); transform: none; }
+  .specimen-state__glyph { padding-inline: 0.35rem; font-size: clamp(10rem, 53vw, 15rem); transform: none; }
   .specimen-state__label { gap: 0.3rem; padding: 1.2rem 1rem; font-size: 0.95rem; }
   .section-heading, .section-heading--split, .problem-layout, .principle-list article, .boundary-list > div, .status-grid { grid-template-columns: 2.3rem minmax(0, 1fr); padding-right: 0.25rem; padding-left: 0.25rem; }
   .section-heading { padding-block: 3rem 5rem; }

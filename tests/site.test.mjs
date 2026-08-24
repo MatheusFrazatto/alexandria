@@ -107,11 +107,18 @@ test("os símbolos oficiais preservam a mesma geometria arquitetônica", () => {
   assert.match(mark, /m36 33 5 5-5 5-5-5z/i);
 });
 
-test("cada espécime Al permanece inteiro no desktop sem alterar o mobile", () => {
+test("o espécime soletra ALEX sem perder os quatro estados", () => {
+  const html = page();
   const css = styles();
-  assert.match(css, /--glyph-scale:\s*0\.58/);
+  const specimen = html.slice(html.indexOf('class="specimen"'), html.indexOf('</section>', html.indexOf('class="specimen"')));
+  const glyphs = [...specimen.matchAll(/class="specimen-state__glyph"[^>]*>([^<]+)<\/span>/g)]
+    .map((match) => match[1]);
+
+  assert.deepEqual(glyphs, ["A", "L", "E", "X"]);
+  assert.equal((specimen.match(/class="specimen-state__label"/g) ?? []).length, 4);
+  assert.match(css, /--glyph-scale:\s*0\.82/);
   assert.match(css, /transform:\s*scaleX\(var\(--glyph-scale\)\)/);
-  assert.match(css, /\.specimen-state__glyph\s*\{[^}]*overflow:\s*visible/s);
+  assert.match(css, /\.specimen-state__glyph\s*\{[^}]*justify-content:\s*center/s);
   assert.match(css, /@media\s*\(max-width:\s*48rem\)[\s\S]*\.specimen-state__glyph\s*\{[^}]*transform:\s*none/s);
 });
 
