@@ -119,12 +119,17 @@ export function auditRelease() {
     [/@media\s*\(max-width:\s*28rem\)/, "breakpoint estreito"],
     [/body\s*\{[^}]*min-width:\s*20rem/s, "limite estrutural de 320px"],
     [/overflow-wrap:\s*(?:anywhere|break-word)/, "quebra de texto expandido"],
+    [/\.specimen\s*\{[^}]*container-type:\s*inline-size/s, "dimensionamento pelo campo do espécime"],
+    [/font-size:\s*clamp\(11rem,\s*31cqw,\s*27rem\)/, "limite fluido dos glifos ALEX"],
   ];
   for (const [pattern, label] of responsiveChecks) {
     if (!pattern.test(css)) errors.push(`Contrato responsivo ausente: ${label}.`);
   }
   if (/text-overflow:\s*ellipsis|line-clamp/i.test(css)) {
     errors.push("A cópia expandida não pode ser truncada.");
+  }
+  if (/--glyph-scale|scaleX\(/.test(css)) {
+    errors.push("Os glifos ALEX devem preservar proporções naturais e caber no próprio campo.");
   }
   if (/animation-duration:\s*0\.01ms/i.test(css)) {
     errors.push("Movimento reduzido deve remover apenas a animação decorativa, sem corte global.");

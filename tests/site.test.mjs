@@ -116,10 +116,11 @@ test("o espécime soletra ALEX sem perder os quatro estados", () => {
 
   assert.deepEqual(glyphs, ["A", "L", "E", "X"]);
   assert.equal((specimen.match(/class="specimen-state__label"/g) ?? []).length, 4);
-  assert.match(css, /--glyph-scale:\s*0\.82/);
-  assert.match(css, /transform:\s*scaleX\(var\(--glyph-scale\)\)/);
+  assert.match(css, /\.specimen\s*\{[^}]*container-type:\s*inline-size/s);
+  assert.match(css, /font-size:\s*clamp\(11rem,\s*31cqw,\s*27rem\)/);
+  assert.doesNotMatch(css, /--glyph-scale|scaleX\(/);
   assert.match(css, /\.specimen-state__glyph\s*\{[^}]*justify-content:\s*center/s);
-  assert.match(css, /@media\s*\(max-width:\s*48rem\)[\s\S]*\.specimen-state__glyph\s*\{[^}]*transform:\s*none/s);
+  assert.match(css, /@media\s*\(max-width:\s*62rem\)[\s\S]*\.specimen-state__glyph\s*\{[^}]*font-size:\s*clamp\(13rem,\s*32vw,\s*21rem\)/s);
 });
 
 test("a candidata de lançamento cumpre contraste, expansão e desempenho", () => {
