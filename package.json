@@ -1,0 +1,15 @@
+{
+  "name": "alexandria-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Landing page estática e pública do Alexandria.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "build": "node scripts/validate-site.mjs",
+    "audit": "node scripts/audit-release.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
