@@ -129,3 +129,15 @@ test("a candidata de lançamento cumpre contraste, expansão e desempenho", () =
   assert.ok(report.localization.expansionFactor >= 1.3);
   assert.ok(report.performance.estimatedPrincipalContentMs < 2500);
 });
+
+test("o README apresenta o site, o acesso, a stack e o fluxo assistido por IA", () => {
+  const readme = readFileSync(join(root, "README.md"), "utf8");
+  assert.match(readme, /https:\/\/matheusfrazatto\.github\.io\/alexandria-site\//);
+  for (const heading of ["Sobre o site", "Tecnologias", "Desenvolvimento assistido por IA"]) {
+    assert.match(readme, new RegExp(`## ${heading}`));
+  }
+  for (const technology of ["HTML5", "CSS", "Node.js", "GitHub Pages", "Spec Kit", "Impeccable", "Codex"]) {
+    assert.match(readme, new RegExp(technology, "i"));
+  }
+  assert.doesNotMatch(readme, /ainda não possui remote/i);
+});
