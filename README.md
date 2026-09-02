@@ -5,9 +5,7 @@ responsabilidade, rastreabilidade e determinismo.
 
 ## Acesso
 
-**Site:** [matheusfrazatto.github.io/alexandria-site](https://matheusfrazatto.github.io/alexandria-site/)
-
-**Repositório:** [github.com/MatheusFrazatto/alexandria-site](https://github.com/MatheusFrazatto/alexandria-site)
+**Site:** [matheusfrazatto.github.io/alexandria](https://matheusfrazatto.github.io/alexandria/)
 
 ## Sobre o site
 
