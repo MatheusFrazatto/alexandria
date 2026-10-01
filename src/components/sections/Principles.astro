@@ -1,0 +1,148 @@
+---
+import CatHead from "../CatHead.astro";
+import type { Dict } from "../../i18n";
+
+interface Props {
+  d: Dict;
+}
+const { d } = Astro.props;
+const p = d.principles;
+---
+
+<section class="section principles" id="principios" aria-labelledby="principios-title" data-section="principios">
+  <div class="wrap section__grid">
+    <header class="section__head">
+      <CatHead id="principios-title" no={p.no} name={p.name} />
+    </header>
+    <div class="section__body">
+      <p class="statement">{p.statement}</p>
+
+      <ol class="tenets">
+        {
+          p.items.map((item, i) => (
+            <li class="tenet" data-tenet>
+              <span class="tenet__strip code-strip" aria-hidden="true">
+                {p.items.map((_, b) => (
+                  <span class="block" data-state={b === i ? "plot" : undefined} />
+                ))}
+              </span>
+              <h3 class="tenet__name">{item.title}</h3>
+              <p class="tenet__text">{item.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <div class="limits">
+      <h3 class="limits__title engraved">{p.notTitle}</h3>
+      <ul class="limits__list">
+        {
+          p.not.map((item) => (
+            <li class="limit">
+              <span class="limit__name">{item.title}</span>
+              <span class="limit__text">{item.text}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tenets {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    border-top: 1px solid var(--line-2);
+  }
+  .tenet {
+    display: grid;
+    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+    grid-template-areas:
+      "strip strip"
+      "name text";
+    gap: 0.9rem clamp(1.5rem, 3vw, 3rem);
+    padding: 1.75rem 0 2rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .tenet__strip {
+    grid-area: strip;
+  }
+  .tenet__strip .block {
+    width: 0.55rem;
+    height: 0.55rem;
+  }
+  .tenet__name {
+    grid-area: name;
+    font-family: var(--font-cat);
+    font-size: clamp(1.125rem, 0.95rem + 0.6vw, 1.4rem);
+    font-weight: 400;
+    font-stretch: 100%;
+    letter-spacing: 0.12em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--ink);
+    hyphens: none;
+  }
+  .tenet__text {
+    grid-area: text;
+    max-width: 52ch;
+  }
+
+  .limits {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2rem);
+    padding-top: clamp(2rem, 4vw, 3.5rem);
+  }
+  .limits__title {
+    grid-column: 1 / span 4;
+    font-size: 0.6875rem;
+    color: var(--ink-2);
+  }
+  .limits__list {
+    grid-column: 5 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 clamp(1.5rem, 3vw, 3rem);
+  }
+  .limit {
+    display: grid;
+    gap: 0.4rem;
+    padding: 1.1rem 0 1.3rem;
+    border-top: 1px solid var(--line);
+  }
+  .limit__name {
+    color: var(--ink);
+    font-weight: 500;
+    text-decoration: line-through;
+    text-decoration-color: var(--ink-3);
+    text-decoration-thickness: 1px;
+  }
+  .limit__text {
+    font-size: 0.9375rem;
+  }
+
+  @media (max-width: 960px) {
+    .limits__title,
+    .limits__list {
+      grid-column: 1 / -1;
+    }
+    .limits__title {
+      margin-bottom: 1.25rem;
+    }
+  }
+  @media (max-width: 640px) {
+    .tenet {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "strip"
+        "name"
+        "text";
+    }
+    .limits__list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

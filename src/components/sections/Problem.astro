@@ -1,0 +1,190 @@
+---
+import CatHead from "../CatHead.astro";
+import { ridgelines } from "../../lib/plots";
+import type { Dict } from "../../i18n";
+
+interface Props {
+  d: Dict;
+}
+const { d } = Astro.props;
+const p = d.problem;
+const plot = ridgelines();
+---
+
+<section class="section problem" aria-labelledby="problema-title" data-section="problema" id="problema">
+  <div class="wrap section__grid">
+    <header class="section__head">
+      <CatHead id="problema-title" no={p.no} name={p.name} />
+    </header>
+
+    <div class="section__body">
+      <p class="statement">{p.statement}</p>
+      <p class="problem__answer">
+        <span class="block" data-state="approved" aria-hidden="true"></span>
+        {p.answer}
+      </p>
+      <div class="problem__body">
+        {p.body.map((para) => <p class="prose">{para}</p>)}
+      </div>
+    </div>
+
+    <figure class="problem__fig" aria-labelledby="ridge-caption" data-ridges>
+      <svg viewBox={`0 0 ${plot.width} ${plot.height}`} role="img" aria-label={p.plotLabel} preserveAspectRatio="none">
+        {
+          plot.ridges.map((r) => (
+            <g class:list={["ridge", r.source && "ridge--source"]}>
+              <path class="ridge__fill" d={r.fillDrifted} data-a={r.fillAligned} data-b={r.fillDrifted} />
+              <path class="ridge__line" d={r.drifted} data-a={r.aligned} data-b={r.drifted} vector-effect="non-scaling-stroke" />
+            </g>
+          ))
+        }
+      </svg>
+      <figcaption class="fig-caption" id="ridge-caption">
+        <span class="engraved">{p.figTitle}</span>
+        <span>{p.figCaption}</span>
+        <span class="problem__illus">{d.ui.illustrative}</span>
+      </figcaption>
+    </figure>
+
+    <div class="problem__alts">
+      <h3 class="problem__alts-title engraved">{p.alternativesTitle}</h3>
+      <ol class="alts">
+        {
+          p.alternatives.map((a) => (
+            <li class="index-row alts__row">
+              <span class="alts__no cat-no">{a.no}</span>
+              <span class="alts__title">{a.title}</span>
+              <span class="alts__text">{a.text}</span>
+              <span class="alts__state">
+                <span class="block" data-state="out" aria-hidden="true" />
+                {p.alternativesState}
+              </span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .problem__answer {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    margin-top: 1.5rem;
+    font-size: clamp(1.125rem, 0.95rem + 0.7vw, 1.5rem);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--blue-text);
+    max-width: 34ch;
+    text-wrap: balance;
+  }
+  .problem__answer .block {
+    transform: translateY(-0.05em);
+  }
+  .problem__body {
+    margin-top: 2.25rem;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .problem__fig {
+    grid-column: 1 / -1;
+    margin-top: clamp(1rem, 3vw, 2.5rem);
+  }
+  .problem__fig svg {
+    width: 100%;
+    height: clamp(17rem, 34vw, 31rem);
+  }
+  .ridge__fill {
+    fill: var(--black);
+  }
+  .ridge__line {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.15;
+    stroke-linejoin: round;
+    opacity: 0.88;
+  }
+  .ridge--source .ridge__line {
+    stroke: var(--blue);
+    stroke-width: 2;
+    opacity: 1;
+  }
+  .problem__illus {
+    color: var(--ink-3);
+    font-size: 0.75rem;
+  }
+
+  /* Rótulo à esquerda, linhas à direita: o mesmo eixo das outras seções. */
+  .problem__alts {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2rem);
+    margin-top: clamp(1rem, 3vw, 2rem);
+  }
+  .problem__alts-title {
+    grid-column: 1 / span 4;
+    padding-top: 1.35rem;
+    font-size: 0.6875rem;
+    color: var(--ink-2);
+  }
+  .alts {
+    grid-column: 5 / -1;
+  }
+  .alts__row {
+    grid-template-columns: 4.5rem minmax(0, 15rem) minmax(0, 1fr) auto;
+    align-items: baseline;
+  }
+  .alts__no {
+    font-size: 1.15rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-3);
+  }
+  .alts__title {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .alts__text {
+    font-size: 0.9375rem;
+  }
+  .alts__state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-cat);
+    font-size: 0.625rem;
+    font-stretch: 112%;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+  .alts__state .block {
+    width: 0.55rem;
+    height: 0.55rem;
+  }
+
+  @media (max-width: 960px) {
+    .problem__alts-title,
+    .alts {
+      grid-column: 1 / -1;
+    }
+    .problem__alts-title {
+      padding-top: 0;
+      margin-bottom: 1.25rem;
+    }
+  }
+  @media (max-width: 760px) {
+    .alts__row {
+      grid-template-columns: 4rem minmax(0, 1fr);
+    }
+    .alts__text,
+    .alts__state {
+      grid-column: 2;
+    }
+  }
+</style>

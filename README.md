@@ -1,109 +1,102 @@
-# Alexandria Site
+# Alexandria — site
 
-Landing page pública do Alexandria, criada para explicar o produto com
-responsabilidade, rastreabilidade e determinismo.
-
-## Acesso
+Site público do [Alexandria](https://github.com/MatheusFrazatto), a camada de
+contexto governado para agentes de IA. Explica o que o produto é, o que ele já
+faz no Alpha e o que vem a seguir, e já tem a rota onde as versões serão
+publicadas.
 
 **Site:** [matheusfrazatto.github.io/alexandria](https://matheusfrazatto.github.io/alexandria/)
 
-## Sobre o site
+- `/` é o catálogo em português (padrão)
+- `/en/` é o mesmo catálogo em inglês
+- `/download/` e `/en/download/` formam o catálogo de versões, vazio enquanto não houver download público
 
-Alexandria é uma camada de contexto governado para agentes de IA. O produto
-parte de versões aprovadas de documentos Markdown mantidas no Git da própria
-equipe e entrega contexto delimitado, com proveniência e citações revalidáveis.
+O site é informativo: sem formulário, cadastro, analytics, cookies ou
+requisições a terceiros.
 
-Esta landing page apresenta:
+## Stack
 
-- o problema causado por contexto repetido, convenções inventadas e
-  documentação desatualizada;
-- o caminho entre a fonte governada e o contexto entregue ao agente;
-- os princípios de responsabilidade, rastreabilidade e determinismo;
-- o que Alexandria não pretende substituir;
-- o estado atual do produto: Alpha por convite e ainda não indicado para
-  produção.
+| Camada | Tecnologia |
+|---|---|
+| Framework | [Astro](https://astro.build) 7, saída estática, TypeScript strict |
+| Idiomas | i18n nativo do Astro (`pt-br` padrão, `en`), dicionários tipados em `src/i18n/` |
+| Movimento | [anime.js](https://animejs.com) 4 (MIT), empacotado do npm, sem CDN |
+| Figuras | SVG generativo com semente fixa (`src/lib/plots.ts`), inspirado nas famílias radial e noise do [Book of Shapes](https://bookofshapes.com) e recriado em código próprio |
+| Tipografia | Saira, Manrope e Martian Mono (SIL OFL 1.1), auto-hospedadas via `@fontsource-variable` |
+| Qualidade | `astro check`, `node:test`, validador do artefato, Playwright (capturas) |
+| Design | Skill [Impeccable](https://github.com/pbakaus/impeccable) (`.claude/skills/impeccable`) |
+| Publicação | GitHub Pages via Actions (`.github/workflows/pages.yml`) |
 
-A página é informativa. Não possui formulário, cadastro, download, analytics,
-cookies, autenticação ou integração com terceiros.
+## Direção visual
 
-## Tecnologias
+Identidade de catálogo de gravadora: cada página, seção, capacidade e versão
+recebe um número **ALX**; uma figura ocupa cada campo; a informação é codificada
+por número e cor. Fundo preto fosco, tinta branca em linhas finas e molduras de
+1px. A faixa de blocos quadrados usa cor só para estado: azul Alexandria
+(aprovado/elegível), amarelo (revisão vencida), vermelho (quarentena) e cinza
+(rascunho ou fora do orçamento).
 
-### Site
+O momento focal é a figura ALX 001: uma consulta em que os trechos candidatos
+brotam do centro, o anel do orçamento se fecha, a evidência aprovada sobe em
+azul com a citação presa à fonte e, no ciclo seguinte, a consulta sem fonte
+mostra a abstenção.
 
-- **HTML5 semântico:** conteúdo completo, landmarks e hierarquia acessível.
-- **CSS moderno:** Grid, Flexbox, propriedades customizadas, tipografia fluida,
-  breakpoints responsivos e suporte a `prefers-reduced-motion`.
-- **Manrope Variable:** fonte incorporada localmente e distribuída sob a SIL
-  Open Font License 1.1.
-- **SVG e PNG locais:** identidade visual, favicon e imagem de compartilhamento
-  sem dependências externas.
-- **GitHub Pages:** publicação estática da pasta `docs/` na branch `main`.
+Contexto e decisões de design:
 
-O site não utiliza framework, JavaScript cliente ou dependência de runtime.
+- [`PRODUCT.md`](PRODUCT.md) — verdade do produto e regras de afirmação pública
+- [`DESIGN.md`](DESIGN.md) — o sistema visual como foi construído
+- `.impeccable/surfaces/` — briefing da superfície e contrato de direção (só desenvolvimento; nunca vai para o site)
 
-### Qualidade e verificação
+## Desenvolvimento
 
-- **Node.js 22+:** execução dos testes e validadores locais.
-- **`node:test`:** testes de estrutura, conteúdo, identidade e regressão visual
-  estática.
-- **Validador do site:** verifica metadados, links, ativos, privacidade,
-  integrações proibidas e claims públicos.
-- **Auditoria de lançamento:** verifica contraste, estrutura responsiva,
-  pseudolocalização com expansão mínima de 30% e orçamento de carregamento.
-
-## Desenvolvimento assistido por IA
-
-O projeto foi desenvolvido de forma colaborativa com **OpenAI Codex**, usando
-skills especializadas como parte do processo de engenharia e design:
-
-- **[Spec Kit](https://github.com/github/spec-kit):** constituição do projeto,
-  especificação, planejamento, tarefas, rastreabilidade de requisitos e gates
-  de implementação.
-- **[Impeccable](https://github.com/pbakaus/impeccable):** direção visual,
-  composição da landing page, tipografia, responsividade, acessibilidade,
-  desempenho e refinamento de frontend.
-- **Codex:** implementação assistida, testes, auditorias, revisão do artefato
-  público e operações versionadas no repositório.
-
-Essas ferramentas participam apenas do desenvolvimento. Nenhuma skill ou
-serviço de IA é carregado pelo site em produção, e a página não envia dados de
-visitantes para modelos ou APIs.
-
-## Estrutura
-
-```text
-docs/                         # artefato publicado pelo GitHub Pages
-├── index.html                # landing page
-├── 404.html                  # página de erro pública
-└── assets/                   # CSS, fontes e identidade visual
-scripts/
-├── validate-site.mjs         # validação estrutural e de segurança pública
-└── audit-release.mjs         # acessibilidade, localização e desempenho
-tests/
-└── site.test.mjs             # testes de contrato e regressão
-```
-
-## Desenvolvimento local
-
-Requer Node.js 22 ou superior e Python 3 para o servidor estático opcional.
+Requer Node.js 22.12 ou superior.
 
 ```bash
-npm test
-npm run build
-npm run audit
-python3 -m http.server 4173 --directory docs
+npm install
+npm run dev        # http://localhost:4321
+npm run check      # tipos
+npm run build      # gera dist/
+npm run validate   # valida o dist/: links, privacidade, afirmações, paridade PT/EN
+npm test           # testes (inclui a validação quando dist/ existe)
+npm run capture    # capturas 1440/390 em .impeccable/review/ (usa o Edge no Windows)
+node scripts/og.mjs  # regenera public/og.png a partir do hero renderizado
 ```
 
-Abra `http://127.0.0.1:4173/` para revisar o site localmente.
+`npm run capture` aceita `--variant reduced` (movimento reduzido) e
+`--variant nojs` (JavaScript desligado). Em outro sistema, defina
+`CAPTURE_CHANNEL` ou instale o Chromium do Playwright.
+
+## Conteúdo
+
+Toda a cópia está em `src/i18n/pt.ts` e `src/i18n/en.ts`, com a mesma
+estrutura (os testes exigem). Ao editar:
+
+- use só fatos públicos (README e PRODUCT.md do produto);
+- não chame nenhuma versão de Beta, RC, Stable ou pronta para produção, e não
+  invente clientes, métricas ou datas — o validador bloqueia;
+- demonstrações são ilustrativas e devem continuar rotuladas como tal.
+
+## Publicar uma versão
+
+Quando houver download público, crie um arquivo em `src/content/releases/`
+seguindo `src/content/releases/FORMAT.txt` (número `ALX 101`, `ALX 102`…,
+arquivos com SHA-256 e notas nos dois idiomas) e marque `"published": true`.
+O `/download` passa a listar a versão sem mudança de layout.
 
 ## Publicação
 
-O GitHub Pages publica diretamente `main/docs`, com HTTPS, em
-[matheusfrazatto.github.io/alexandria-site](https://matheusfrazatto.github.io/alexandria-site/).
-Não há pipeline de aplicação, servidor, banco de dados ou etapa de build em
-produção.
+O workflow `pages.yml` compila, valida e testa em todo push e pull request, e
+publica no GitHub Pages a partir da `main`. `SITE_URL` e `BASE_PATH` vêm do
+próprio Pages, então o site funciona em domínio próprio ou em subcaminho
+(`/<repositório>/`).
 
-## Tipografia
+## Imagens
 
-A interface incorpora localmente a fonte variável Manrope. A licença acompanha
-o arquivo em `docs/assets/fonts/OFL.txt`.
+`public/og.png` é uma captura do hero renderizado pelo próprio site
+(`scripts/og.mjs`); não há fotografia, imagem de banco ou imagem gerada por IA.
+
+## Licenças
+
+As licenças das fontes e do anime.js são publicadas em `public/licenses/`.
+
+Mantido por [Matheus Frazatto](https://github.com/MatheusFrazatto).

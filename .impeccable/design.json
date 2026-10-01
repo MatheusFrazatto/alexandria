@@ -1,0 +1,465 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-01T03:37:24.602Z",
+  "title": "Design System: Alexandria",
+  "extensions": {
+    "colorMeta": {
+      "matte-black": {
+        "role": "neutral",
+        "displayName": "Matte Black",
+        "canonical": "oklch(15.0% 0.000 90)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#121211",
+          "#262624",
+          "#3a3a37",
+          "#403f3c",
+          "#8a8983",
+          "#b4b3ac",
+          "#ecebe4"
+        ]
+      },
+      "black-raised": {
+        "role": "neutral",
+        "displayName": "Raised Black",
+        "canonical": "oklch(18.2% 0.002 107)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#121211",
+          "#262624",
+          "#3a3a37",
+          "#403f3c",
+          "#8a8983",
+          "#b4b3ac",
+          "#ecebe4"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(93.9% 0.009 100)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#121211",
+          "#262624",
+          "#3a3a37",
+          "#403f3c",
+          "#8a8983",
+          "#b4b3ac",
+          "#ecebe4"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink 2",
+        "canonical": "oklch(76.6% 0.010 100)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#121211",
+          "#262624",
+          "#3a3a37",
+          "#403f3c",
+          "#8a8983",
+          "#b4b3ac",
+          "#ecebe4"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink 3",
+        "canonical": "oklch(62.9% 0.009 99)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#121211",
+          "#262624",
+          "#3a3a37",
+          "#403f3c",
+          "#8a8983",
+          "#b4b3ac",
+          "#ecebe4"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(26.8% 0.004 107)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#121211",
+          "#262624",
+          "#3a3a37",
+          "#403f3c",
+          "#8a8983",
+          "#b4b3ac",
+          "#ecebe4"
+        ]
+      },
+      "hairline-strong": {
+        "role": "neutral",
+        "displayName": "Hairline Strong",
+        "canonical": "oklch(34.7% 0.005 107)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#121211",
+          "#262624",
+          "#3a3a37",
+          "#403f3c",
+          "#8a8983",
+          "#b4b3ac",
+          "#ecebe4"
+        ]
+      },
+      "ghost": {
+        "role": "neutral",
+        "displayName": "Ghost",
+        "canonical": "oklch(36.8% 0.005 92)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#121211",
+          "#262624",
+          "#3a3a37",
+          "#403f3c",
+          "#8a8983",
+          "#b4b3ac",
+          "#ecebe4"
+        ]
+      },
+      "grey-block": {
+        "role": "neutral",
+        "displayName": "Grey Block (draft / out)",
+        "canonical": "oklch(34.7% 0.005 107)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#121211",
+          "#262624",
+          "#3a3a37",
+          "#403f3c",
+          "#8a8983",
+          "#b4b3ac",
+          "#ecebe4"
+        ]
+      },
+      "alexandria-blue": {
+        "role": "primary",
+        "displayName": "Alexandria Blue",
+        "canonical": "oklch(57.5% 0.225 259.3)",
+        "tonalRamp": [
+          "#020a1d",
+          "#04214f",
+          "#063a87",
+          "#0555c3",
+          "#1574fc",
+          "#599cff",
+          "#95c5ff",
+          "#d5f0ff"
+        ]
+      },
+      "blue-text": {
+        "role": "primary",
+        "displayName": "Blue Text",
+        "canonical": "oklch(69.7% 0.160 258.2)",
+        "tonalRamp": [
+          "#070b12",
+          "#1c2431",
+          "#2b405f",
+          "#3b5e92",
+          "#4b7dc8",
+          "#5c9eff",
+          "#92c6ff",
+          "#cdf1ff"
+        ]
+      },
+      "signal-yellow": {
+        "role": "secondary",
+        "displayName": "Signal Yellow (review due)",
+        "canonical": "oklch(79.3% 0.155 89.2)",
+        "tonalRamp": [
+          "#0e0b05",
+          "#27241c",
+          "#463f2d",
+          "#6c5c32",
+          "#947a33",
+          "#be9a2e",
+          "#eabe3f",
+          "#ffeb98"
+        ]
+      },
+      "signal-red": {
+        "role": "secondary",
+        "displayName": "Signal Red (quarantine)",
+        "canonical": "oklch(60.9% 0.196 30.9)",
+        "tonalRamp": [
+          "#140705",
+          "#3e150f",
+          "#6d2419",
+          "#a03223",
+          "#d6412d",
+          "#f2725d",
+          "#ffa795",
+          "#ffded3"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display: catalog number",
+        "purpose": "The hero's ALX 001 only. Condensed Saira, tabular figures."
+      },
+      "headline": {
+        "displayName": "Headline: section number",
+        "purpose": "First line of every section heading; the engraved section name rides beneath it."
+      },
+      "headline-caps": {
+        "displayName": "Headline Caps",
+        "purpose": "Closing status statement, download statement, ledger TODAY/NEXT titles."
+      },
+      "statement": {
+        "displayName": "Statement",
+        "purpose": "One-sentence claim opening a section body; max 22ch, balanced."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Mechanism step names; row titles at weight 500."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All reading text in Ink 2, max 62ch."
+      },
+      "label": {
+        "displayName": "Engraved caps",
+        "purpose": "Straplines, actions, figure titles, legends, decode text. Short labels only."
+      },
+      "label-sm": {
+        "displayName": "Engraved caps, small",
+        "purpose": "Definition terms and state captions in Ink 3."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Citation handles, commits, paths, commands. Literal strings only."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "All CSS state transitions: borders, fills, edge tabs, arrow nudge."
+      },
+      {
+        "name": "state-transition",
+        "value": "0.3s–0.4s",
+        "purpose": "Hover/focus on actions, tabs, sleeves, catalog cells, strip blocks."
+      },
+      {
+        "name": "edge-tab",
+        "value": "transform scaleX(0 → 1), 0.35s ease-out, origin right",
+        "purpose": "Blue tab entering an action's right edge."
+      },
+      {
+        "name": "choreography-ease",
+        "value": "anime.js outExpo; inOutQuart for the ring draw; outBack(2) for tips and ledger blocks",
+        "purpose": "Hero intro and the query-plot cycle."
+      },
+      {
+        "name": "hero-intro",
+        "value": "number 900ms, blur 6px → 0, rise 0.12em; strapline tracking 0.6em → 0.3em over 1200ms; copy stagger 90ms",
+        "purpose": "First-viewport entry."
+      },
+      {
+        "name": "plot-cycle",
+        "value": "grounded held 6400ms, abstention held 3800ms; pauses off-screen, on hidden tab, or via the toggle",
+        "purpose": "The grounded → abstention demonstration."
+      },
+      {
+        "name": "scroll-sync",
+        "value": "anime.js onScroll, sync 0.25–0.3, linear",
+        "purpose": "Ridge drift in the problem figure and the mechanism rail fill."
+      },
+      {
+        "name": "cascade",
+        "value": "stagger 35–60ms, 500ms",
+        "purpose": "Proof record rows on tab change; ledger blocks on entry."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "choreography skipped; CSS transitions 0.01ms",
+        "purpose": "HTML already ships in its final state."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone-min",
+        "value": "400px"
+      },
+      {
+        "name": "compact-masthead",
+        "value": "760px"
+      },
+      {
+        "name": "single-column",
+        "value": "960px"
+      },
+      {
+        "name": "hero-stack",
+        "value": "1080px"
+      },
+      {
+        "name": "nav-collapse",
+        "value": "1180px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Catalog Action",
+      "kind": "button",
+      "refersTo": "action",
+      "description": "Outline action in engraved caps; a blue tab scales in on its right edge on hover/focus.",
+      "html": "<a class=\"ds-action\" href=\"#\">Open the catalog <svg viewBox=\"0 0 24 12\" width=\"22\" aria-hidden=\"true\"><path d=\"M0 6h22M17 1l5 5-5 5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.25\"/></svg></a>",
+      "css": ":host{--black:#0b0b0b;--black-raised:#121211;--ink:#ecebe4;--ink-2:#b4b3ac;--ink-3:#8a8983;--line:#262624;--line-2:#3a3a37;--ghost:#403f3c;--blue:#016efa;--blue-text:#5b9dff;--yellow:#e3b521;--red:#e0442f;--grey-block:#3a3a37;--font-read:'Manrope Variable','Manrope',system-ui,sans-serif;--font-cat:'Saira Variable','Saira','Manrope Variable',sans-serif;--font-data:'Martian Mono Variable','Martian Mono',ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1)}.ds-action{position:relative;display:inline-flex;align-items:center;gap:1.1rem;min-height:3.25rem;padding:0 1.4rem;border:1px solid var(--ink-3);background:transparent;color:var(--ink);font-family:var(--font-cat);font-weight:500;font-stretch:112%;text-transform:uppercase;font-size:.78rem;letter-spacing:.26em;text-decoration:none;cursor:pointer;transition:border-color .3s var(--ease-out)}.ds-action::after{content:'';position:absolute;top:-1px;right:-1px;bottom:-1px;width:.6rem;background:var(--blue);transform:scaleX(0);transform-origin:right center;transition:transform .35s var(--ease-out)}.ds-action svg{transition:transform .35s var(--ease-out)}.ds-action:hover,.ds-action:focus-visible{border-color:var(--ink)}.ds-action:hover::after,.ds-action:focus-visible::after{transform:scaleX(1)}.ds-action:hover svg,.ds-action:focus-visible svg{transform:translateX(.35rem)}.ds-action:focus-visible{outline:2px solid var(--blue-text);outline-offset:3px}"
+    },
+    {
+      "name": "Record Tabs",
+      "kind": "chip",
+      "refersTo": "record-tab",
+      "description": "Outline tabs with a state block; the selected tab gets an edge tab (blue for grounded, Ink 3 for abstention).",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab\" role=\"tab\" aria-selected=\"true\"><span class=\"ds-block ds-approved\"></span>Grounded</button><button class=\"ds-tab ds-tab--none\" role=\"tab\" aria-selected=\"false\"><span class=\"ds-block\"></span>Abstention</button></div>",
+      "css": ":host{--black:#0b0b0b;--black-raised:#121211;--ink:#ecebe4;--ink-2:#b4b3ac;--ink-3:#8a8983;--line:#262624;--line-2:#3a3a37;--ghost:#403f3c;--blue:#016efa;--blue-text:#5b9dff;--yellow:#e3b521;--red:#e0442f;--grey-block:#3a3a37;--font-read:'Manrope Variable','Manrope',system-ui,sans-serif;--font-cat:'Saira Variable','Saira','Manrope Variable',sans-serif;--font-data:'Martian Mono Variable','Martian Mono',ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1)}.ds-tabs{display:flex;gap:.5rem}.ds-tab{position:relative;display:inline-flex;align-items:center;gap:.65rem;min-height:2.75rem;padding:0 1.1rem;border:1px solid var(--line-2);background:transparent;color:var(--ink-2);font-family:var(--font-cat);font-weight:500;font-stretch:112%;text-transform:uppercase;font-size:.6875rem;letter-spacing:.22em;cursor:pointer;transition:color .3s var(--ease-out),border-color .3s var(--ease-out)}.ds-tab:hover{color:var(--ink)}.ds-tab:focus-visible{outline:2px solid var(--blue-text);outline-offset:3px}.ds-tab[aria-selected=true]{color:var(--ink);border-color:var(--ink)}.ds-tab[aria-selected=true]::after{content:'';position:absolute;top:-1px;right:-1px;bottom:-1px;width:.4rem;background:var(--blue)}.ds-tab--none[aria-selected=true]::after{background:var(--ink-3)}.ds-block{display:inline-block;width:.55rem;height:.55rem;background:var(--grey-block)}.ds-approved{background:var(--blue)}"
+    },
+    {
+      "name": "State Blocks",
+      "kind": "custom",
+      "refersTo": "state-block",
+      "description": "The color code: square blocks where color is state. Approved, review due, quarantined, draft/out, planned.",
+      "html": "<ul class=\"ds-legend\"><li><span class=\"ds-sb ds-sb--approved\"></span>Approved and eligible</li><li><span class=\"ds-sb ds-sb--review\"></span>Review due</li><li><span class=\"ds-sb ds-sb--quarantine\"></span>Quarantined</li><li><span class=\"ds-sb\"></span>Draft or out of budget</li><li><span class=\"ds-sb ds-sb--planned\"></span>Planned</li></ul>",
+      "css": ":host{--black:#0b0b0b;--black-raised:#121211;--ink:#ecebe4;--ink-2:#b4b3ac;--ink-3:#8a8983;--line:#262624;--line-2:#3a3a37;--ghost:#403f3c;--blue:#016efa;--blue-text:#5b9dff;--yellow:#e3b521;--red:#e0442f;--grey-block:#3a3a37;--font-read:'Manrope Variable','Manrope',system-ui,sans-serif;--font-cat:'Saira Variable','Saira','Manrope Variable',sans-serif;--font-data:'Martian Mono Variable','Martian Mono',ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1)}.ds-legend{display:flex;flex-wrap:wrap;gap:.6rem 1.4rem;margin:0;padding:0;list-style:none;font-family:var(--font-read);font-size:.8125rem;color:var(--ink-2)}.ds-legend li{display:inline-flex;align-items:center;gap:.55rem}.ds-sb{display:inline-block;width:.7rem;height:.7rem;background:var(--grey-block)}.ds-sb--approved{background:var(--blue)}.ds-sb--review{background:var(--yellow)}.ds-sb--quarantine{background:var(--red)}.ds-sb--planned{background:transparent;box-shadow:inset 0 0 0 1px var(--ink-3)}"
+    },
+    {
+      "name": "Masthead Code Strip",
+      "kind": "nav",
+      "refersTo": "strip-block",
+      "description": "One block per section; the current one lit blue, hover/focus decodes it to number and name.",
+      "html": "<nav class=\"ds-strip\" aria-label=\"Sections\"><a href=\"#\" class=\"ds-strip__b\" aria-current=\"true\"><span class=\"ds-vh\">ALX 001 · Alexandria</span></a><a href=\"#\" class=\"ds-strip__b\"><span class=\"ds-vh\">ALX 002 · The problem</span></a><a href=\"#\" class=\"ds-strip__b\"><span class=\"ds-vh\">ALX 003 · How it works</span></a><a href=\"#\" class=\"ds-strip__b\"><span class=\"ds-vh\">ALX 004 · Proof</span></a><span class=\"ds-strip__decode\" aria-hidden=\"true\">ALX 001 · Alexandria</span></nav>",
+      "css": ":host{--black:#0b0b0b;--black-raised:#121211;--ink:#ecebe4;--ink-2:#b4b3ac;--ink-3:#8a8983;--line:#262624;--line-2:#3a3a37;--ghost:#403f3c;--blue:#016efa;--blue-text:#5b9dff;--yellow:#e3b521;--red:#e0442f;--grey-block:#3a3a37;--font-read:'Manrope Variable','Manrope',system-ui,sans-serif;--font-cat:'Saira Variable','Saira','Manrope Variable',sans-serif;--font-data:'Martian Mono Variable','Martian Mono',ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1)}.ds-strip{display:flex;align-items:center;gap:3px}.ds-strip__b{display:block;width:1.55rem;height:.95rem;background:var(--grey-block);transition:background-color .4s var(--ease-out)}.ds-strip__b:hover{background:var(--ink-3)}.ds-strip__b[aria-current=true]{background:var(--blue)}.ds-strip__b:focus-visible{outline:2px solid var(--blue-text);outline-offset:3px}.ds-strip__decode{margin-left:1.1rem;font-family:var(--font-cat);font-weight:500;font-stretch:112%;text-transform:uppercase;font-size:.6875rem;letter-spacing:.26em;color:var(--ink-2);white-space:nowrap}.ds-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}"
+    },
+    {
+      "name": "Catalog Heading",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Section heading: condensed ALX number with the engraved section name inside the same heading element.",
+      "html": "<h2 class=\"ds-cat\"><span class=\"ds-cat__no\">ALX 003</span><span class=\"ds-cat__name\">How it works</span></h2>",
+      "css": ":host{--black:#0b0b0b;--black-raised:#121211;--ink:#ecebe4;--ink-2:#b4b3ac;--ink-3:#8a8983;--line:#262624;--line-2:#3a3a37;--ghost:#403f3c;--blue:#016efa;--blue-text:#5b9dff;--yellow:#e3b521;--red:#e0442f;--grey-block:#3a3a37;--font-read:'Manrope Variable','Manrope',system-ui,sans-serif;--font-cat:'Saira Variable','Saira','Manrope Variable',sans-serif;--font-data:'Martian Mono Variable','Martian Mono',ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1)}.ds-cat{display:flex;flex-direction:column;gap:.85rem;margin:0;font-weight:inherit}.ds-cat__no{font-family:var(--font-cat);font-stretch:68%;font-weight:460;font-variant-numeric:tabular-nums;line-height:.9;color:var(--ink);font-size:clamp(2.75rem,1.6rem + 4.2vw,4.75rem);letter-spacing:.09em}.ds-cat__name{font-family:var(--font-cat);font-weight:500;font-stretch:112%;text-transform:uppercase;font-size:.8125rem;letter-spacing:.28em;color:var(--ink-2)}"
+    },
+    {
+      "name": "Evidence Record",
+      "kind": "card",
+      "refersTo": "record",
+      "description": "Hairline-framed proof record: number, query, state, two-column definition table, verdict in Blue Text. Illustrative data.",
+      "html": "<article class=\"ds-rec\"><header class=\"ds-rec__head\"><span class=\"ds-rec__no\">ALX 004.A</span><span class=\"ds-rec__state\"><span class=\"ds-sq\"></span>Grounded</span></header><p class=\"ds-rec__q\">How do we version public endpoints?</p><dl class=\"ds-rec__t\"><div><dt>Handle</dt><dd class=\"ds-mono\">cite:7c1e4a</dd></div><div><dt>Lines</dt><dd>L41–58</dd></div><div><dt>Commit</dt><dd class=\"ds-mono\">a3f9c2e</dd></div><div class=\"ds-ok\"><dt>Validation</dt><dd>Valid at this commit</dd></div></dl></article>",
+      "css": ":host{--black:#0b0b0b;--black-raised:#121211;--ink:#ecebe4;--ink-2:#b4b3ac;--ink-3:#8a8983;--line:#262624;--line-2:#3a3a37;--ghost:#403f3c;--blue:#016efa;--blue-text:#5b9dff;--yellow:#e3b521;--red:#e0442f;--grey-block:#3a3a37;--font-read:'Manrope Variable','Manrope',system-ui,sans-serif;--font-cat:'Saira Variable','Saira','Manrope Variable',sans-serif;--font-data:'Martian Mono Variable','Martian Mono',ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1)}.ds-rec{border:1px solid var(--line-2);background:var(--black);padding:clamp(1.25rem,2.5vw,2rem);font-family:var(--font-read);color:var(--ink-2);max-width:32rem}.ds-rec__head{display:flex;justify-content:space-between;align-items:center;padding-bottom:1.25rem;border-bottom:1px solid var(--line)}.ds-rec__no{font-family:var(--font-cat);font-stretch:68%;font-weight:460;font-variant-numeric:tabular-nums;line-height:.9;color:var(--ink);font-size:1.6rem;letter-spacing:.12em}.ds-rec__state{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--font-cat);font-weight:500;font-stretch:112%;text-transform:uppercase;font-size:.6875rem;letter-spacing:.26em;color:var(--ink)}.ds-sq{width:.7rem;height:.7rem;background:var(--blue)}.ds-rec__q{margin:1.5rem 0 0;font-size:1.25rem;font-weight:500;line-height:1.35;color:var(--ink)}.ds-rec__t{display:grid;grid-template-columns:1fr 1fr;margin:1.5rem 0 0;border-top:1px solid var(--line)}.ds-rec__t div{display:grid;gap:.3rem;padding:.85rem 1rem .85rem 0;border-bottom:1px solid var(--line)}.ds-rec__t div:nth-child(even){padding-left:1rem;border-left:1px solid var(--line)}.ds-rec__t dt{font-family:var(--font-cat);font-weight:500;font-stretch:112%;text-transform:uppercase;font-size:.625rem;letter-spacing:.22em;color:var(--ink-3)}.ds-rec__t dd{margin:0}.ds-mono{font-family:var(--font-data);font-size:.8125rem;color:var(--ink)}.ds-ok dd{color:var(--blue-text)}"
+    },
+    {
+      "name": "Sleeve",
+      "kind": "card",
+      "refersTo": "sleeve-hover",
+      "description": "Surface cell: number and engraved name, radial glyph, Mono command line under a hairline; hover fills Raised Black.",
+      "html": "<article class=\"ds-sleeve\" tabindex=\"0\"><div class=\"ds-sleeve__top\"><h3 class=\"ds-sleeve__t\"><span class=\"ds-sleeve__no\">ALX 005.2</span><span class=\"ds-sleeve__name\">CLI</span></h3><svg viewBox=\"0 0 120 120\" width=\"72\" aria-hidden=\"true\"><circle cx=\"60\" cy=\"60\" r=\"50\" fill=\"none\" stroke=\"#ecebe4\"/><circle cx=\"60\" cy=\"60\" r=\"30\" fill=\"none\" stroke=\"#ecebe4\"/><line x1=\"60\" y1=\"30\" x2=\"60\" y2=\"10\" stroke=\"#016efa\" stroke-width=\"2\"/><line x1=\"81\" y1=\"39\" x2=\"95\" y2=\"25\" stroke=\"#8a8983\" stroke-dasharray=\"2 2.5\"/><line x1=\"30\" y1=\"60\" x2=\"10\" y2=\"60\" stroke=\"#8a8983\" stroke-dasharray=\"2 2.5\"/><rect x=\"55\" y=\"55\" width=\"10\" height=\"10\" fill=\"#ecebe4\"/></svg></div><p class=\"ds-sleeve__x\">Curation and administration from the terminal.</p><div class=\"ds-sleeve__lines\"><code>alx approve docs/api.md</code></div></article>",
+      "css": ":host{--black:#0b0b0b;--black-raised:#121211;--ink:#ecebe4;--ink-2:#b4b3ac;--ink-3:#8a8983;--line:#262624;--line-2:#3a3a37;--ghost:#403f3c;--blue:#016efa;--blue-text:#5b9dff;--yellow:#e3b521;--red:#e0442f;--grey-block:#3a3a37;--font-read:'Manrope Variable','Manrope',system-ui,sans-serif;--font-cat:'Saira Variable','Saira','Manrope Variable',sans-serif;--font-data:'Martian Mono Variable','Martian Mono',ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1)}.ds-sleeve{display:grid;gap:1.5rem;max-width:22rem;padding:clamp(1.25rem,2.5vw,2.25rem);border:1px solid var(--line-2);background:var(--black);font-family:var(--font-read);color:var(--ink-2);transition:background-color .4s var(--ease-out)}.ds-sleeve:hover,.ds-sleeve:focus-visible{background:var(--black-raised)}.ds-sleeve:focus-visible{outline:2px solid var(--blue-text);outline-offset:3px}.ds-sleeve__top{display:flex;justify-content:space-between;gap:1rem}.ds-sleeve__t{display:grid;gap:.75rem;margin:0;font-weight:inherit}.ds-sleeve__no{font-family:var(--font-cat);font-stretch:68%;font-weight:460;font-variant-numeric:tabular-nums;line-height:.9;color:var(--ink);font-size:2.25rem;letter-spacing:.1em}.ds-sleeve__name{font-family:var(--font-cat);font-weight:500;font-stretch:112%;text-transform:uppercase;font-size:.75rem;letter-spacing:.26em;color:var(--ink)}.ds-sleeve__x{margin:0;font-size:.9875rem}.ds-sleeve__lines{padding-top:1.25rem;border-top:1px solid var(--line)}.ds-sleeve__lines code{font-family:var(--font-data);font-size:.78rem;color:var(--ink)}"
+    },
+    {
+      "name": "Ledger Row",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Index/ledger row: Mono number, state block, Manrope name and text between hairlines.",
+      "html": "<ol class=\"ds-ledger\"><li class=\"ds-row\"><span class=\"ds-row__no\">01</span><span><span class=\"ds-b ds-b--on\"></span></span><span class=\"ds-row__n\">Deterministic search</span><span class=\"ds-row__x\">Search, browse, read and validate citations.</span></li><li class=\"ds-row\"><span class=\"ds-row__no\">02</span><span><span class=\"ds-b ds-b--plan\"></span></span><span class=\"ds-row__n ds-next\">Windows installer</span><span class=\"ds-row__x\">Planned for v1.</span></li></ol>",
+      "css": ":host{--black:#0b0b0b;--black-raised:#121211;--ink:#ecebe4;--ink-2:#b4b3ac;--ink-3:#8a8983;--line:#262624;--line-2:#3a3a37;--ghost:#403f3c;--blue:#016efa;--blue-text:#5b9dff;--yellow:#e3b521;--red:#e0442f;--grey-block:#3a3a37;--font-read:'Manrope Variable','Manrope',system-ui,sans-serif;--font-cat:'Saira Variable','Saira','Manrope Variable',sans-serif;--font-data:'Martian Mono Variable','Martian Mono',ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1)}.ds-ledger{margin:0;padding:0;list-style:none;font-family:var(--font-read);color:var(--ink-2)}.ds-row{display:grid;grid-template-columns:4.25rem 1.25rem minmax(0,14rem) minmax(0,1fr);align-items:baseline;gap:.4rem 1.25rem;padding:1.15rem 0;border-top:1px solid var(--line)}.ds-row:last-child{border-bottom:1px solid var(--line)}.ds-row__no{font-family:var(--font-data);font-size:.75rem;font-variant-numeric:tabular-nums;color:var(--ink-3)}.ds-b{display:inline-block;width:.65rem;height:.65rem;background:var(--grey-block)}.ds-b--on{background:var(--blue)}.ds-b--plan{background:transparent;box-shadow:inset 0 0 0 1px var(--ink-3)}.ds-row__n{color:var(--ink);font-weight:500}.ds-next{color:var(--ink-2)}.ds-row__x{font-size:.9375rem}"
+    },
+    {
+      "name": "Language Toggle",
+      "kind": "nav",
+      "refersTo": "masthead",
+      "description": "Framed PT/EN switch in the masthead; the current language in Ink.",
+      "html": "<a class=\"ds-lang\" href=\"#\" hreflang=\"en\"><span class=\"ds-lang__on\">PT</span><span class=\"ds-lang__sep\">/</span>EN</a>",
+      "css": ":host{--black:#0b0b0b;--black-raised:#121211;--ink:#ecebe4;--ink-2:#b4b3ac;--ink-3:#8a8983;--line:#262624;--line-2:#3a3a37;--ghost:#403f3c;--blue:#016efa;--blue-text:#5b9dff;--yellow:#e3b521;--red:#e0442f;--grey-block:#3a3a37;--font-read:'Manrope Variable','Manrope',system-ui,sans-serif;--font-cat:'Saira Variable','Saira','Manrope Variable',sans-serif;--font-data:'Martian Mono Variable','Martian Mono',ui-monospace,monospace;--ease-out:cubic-bezier(0.16,1,0.3,1)}.ds-lang{display:inline-block;padding:.45rem .6rem;border:1px solid var(--line-2);font-family:var(--font-cat);font-weight:500;font-stretch:112%;text-transform:uppercase;font-size:.6875rem;letter-spacing:.24em;color:var(--ink-2);text-decoration:none}.ds-lang:hover{color:var(--ink)}.ds-lang:focus-visible{outline:2px solid var(--blue-text);outline-offset:3px}.ds-lang__on{color:var(--ink)}.ds-lang__sep{color:var(--ink-3);margin-inline:.15em}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Matte Black Catalog",
+    "overview": "The site is a record label's catalog printed on matte black. Every page, section, capability, release and evidence item is an entry with an ALX number, set in condensed Saira at the size a sleeve would carry it. Reading happens in Manrope, quietly, in a narrow column beside the number; handles, commits and commands are the only things that drop into Martian Mono. Most of the field is left unprinted. What is printed is hairline: 1px frames, 1px rules, 1px plot ink, square corners everywhere.\n\nColor is never decoration. It is a state code, carried by small square blocks and by the strokes of the plots: Alexandria Blue means approved, eligible, current; signal yellow means review is due; signal red means quarantined; grey means draft or out of scope. Each section owns one figure drawn in the same radial grammar (seeded spokes, a closing budget ring, ghost spokes for ineligible evidence, one blue spoke carrying a pinned citation), so the figures read as a single series of pressings rather than illustrations. Motion explains the mechanism and then stops; the HTML ships already in its final state, and nothing depends on animation or JavaScript to be read.\n\nThe world deliberately rejects the developer-tool landing page: no terminal mock-ups, no glow, no feature-card grids, and none of the previous blueprint site's vocabulary.",
+    "keyCharacteristics": [
+      "Matte black field, warm off-white ink, three ink tiers, two hairline greys; dark only.",
+      "ALX catalog numbers in condensed Saira as the primary typographic event of every section.",
+      "Wide-tracked engraved caps for short labels; Manrope for anything that is read.",
+      "Square state blocks as the only carriers of color; blue is the only trust color.",
+      "Seeded radial plots in hairline ink: one figure per field.",
+      "1px frames and rules, zero radius, no shadows, depth by tone only.",
+      "Motion is explanatory, pausable, and fully skipped under reduced motion."
+    ],
+    "rules": [
+      {
+        "name": "The Color Is State Rule",
+        "body": "A color other than ink or grey appears only to state approval, review, quarantine, or currency. If a hue cannot be read as one of those four states, it does not belong on the page.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Lit Block Rule",
+        "body": "In a positional code strip at most one block is lit and the rest stay grey: blue where the position is current or approved (masthead sections, catalog cells, the grounded record), Ink where it is only an index position (tenets). An all-grey strip is a statement in itself: the abstention record's strip has nothing lit. Legends and state columns may show several state colors at once because they are keys, not positions.",
+        "section": "colors"
+      },
+      {
+        "name": "The Readable Blue Rule",
+        "body": "Alexandria Blue fills and strokes; Blue Text speaks. Never set words in `alexandria-blue` on matte black (4.3:1); use `blue-text` (7.2:1).",
+        "section": "colors"
+      },
+      {
+        "name": "The Engraved Caps Rule",
+        "body": "Wide-tracked caps are for labels of a few words, never running text. If it needs a second sentence, it is Manrope.",
+        "section": "typography"
+      },
+      {
+        "name": "The Number Is The Title Rule",
+        "body": "Every section's heading begins with its ALX number in condensed Saira; the human-readable name rides underneath as engraved caps inside the same heading element. No separate label floats above a heading.",
+        "section": "typography"
+      },
+      {
+        "name": "The Literal Strings Rule",
+        "body": "Martian Mono appears only for strings that exist verbatim in a repository or terminal: handles, commits, paths, commands. Never for labels or decoration.",
+        "section": "typography"
+      },
+      {
+        "name": "The Unprinted Black Rule",
+        "body": "Empty field is a material, not a gap to fill. Sections are separated by space and one hairline, never by bands of tinted background.",
+        "section": "layout"
+      },
+      {
+        "name": "The Hairline Depth Rule",
+        "body": "A container is distinguished by a 1px line or by Raised Black, never by a shadow, glow, or gradient.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Square Corner Rule",
+        "body": "Radius is zero everywhere. A rounded corner reads as a different product.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** give every new page, section, release or evidence item an ALX number in condensed Saira and make that number the start of its heading.",
+      "**Do** use a square state block whenever a state is shown, and keep color tied to the four meanings: blue approved/current, yellow review due, red quarantined, grey draft or out.",
+      "**Do** light at most one block in a positional strip, and always pair a strip with visible or visually hidden text.",
+      "**Do** draw new figures in the radial hairline grammar (spokes, ring, ghosts, one blue line) and caption them as illustrative until real data exists.",
+      "**Do** set Blue Text (`#5b9dff`) for blue words and focus outlines; keep `#016efa` for fills, strokes, and tabs.",
+      "**Do** separate sections with one 1px hairline and the `section-y` padding, with headings in columns 1–4 and reading in columns 5–12.",
+      "**Do** ship every animated element in its final state in HTML and skip the motion under reduced motion.",
+      "**Do** use the canonical architectural-library mark as the only logo, rendered from its own SVG."
+    ],
+    "donts": [
+      "**Don't** introduce a second trust color, a brand gradient, or any hue that does not encode a state; the gradient inside the canonical mark is the mark's own and stays there.",
+      "**Don't** round corners, add drop shadows or glows, or tint section backgrounds.",
+      "**Don't** set running text in engraved caps or Martian Mono.",
+      "**Don't** add a separate label above a section heading; the catalog number is the heading's first line.",
+      "**Don't** build terminal mock-ups, glowing hero effects, or icon-headed feature-card grids.",
+      "**Don't** use dashed lines except to mean \"present but not eligible\" or \"not yet pressed\".",
+      "**Don't** use the legacy generic book icon as an Alexandria identity."
+    ]
+  }
+}

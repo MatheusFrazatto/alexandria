@@ -1,0 +1,165 @@
+---
+// Glifos radiais pequenos (família "radial" do Book of Shapes, recriada em código).
+import { glyphSpokes, polar } from "../lib/plots";
+
+interface Props {
+  kind: "source" | "approved" | "budget" | "cite" | "mcp" | "cli" | "desktop" | "disc";
+  class?: string;
+  seed?: number;
+}
+const { kind, class: className, seed } = Astro.props;
+const c = 60;
+const spokes = glyphSpokes(kind.length * 97 + 11, 36);
+const budgetR = 34;
+const rings = [14, 24, 34, 44, 54];
+const commits = Array.from({ length: 18 }, (_, i) => polar(c, 54, (i / 18) * Math.PI * 2 - Math.PI / 2));
+const approvedAt = 7;
+const citeAngle = -Math.PI / 4;
+const citeTip = polar(c, 46, citeAngle);
+const cliRows = [22, 34, 46, 58, 70, 82, 94];
+const disc = glyphSpokes(seed ?? 7, 64, c, 6, 56);
+---
+
+<svg class:list={["glyph", className]} viewBox="0 0 120 120" aria-hidden="true" data-glyph={kind}>
+  {
+    kind === "source" && (
+      <g>
+        {rings.map((r) => (
+          <circle cx={c} cy={c} r={r} class="g-line g-draw" />
+        ))}
+        {commits.map((p, i) => (
+          <rect x={p.x - 2.5} y={p.y - 2.5} width="5" height="5" class={i === 0 ? "g-blue" : "g-ink"} />
+        ))}
+      </g>
+    )
+  }
+  {
+    kind === "approved" && (
+      <g>
+        {spokes.map((s, i) => (
+          <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} class={i === approvedAt ? "g-blue-line g-draw" : "g-ghost g-draw"} />
+        ))}
+        <circle cx={c} cy={c} r="3" class="g-ink" />
+      </g>
+    )
+  }
+  {
+    kind === "budget" && (
+      <g>
+        {spokes.map((s) => {
+          const inside = Math.min(s.len, budgetR);
+          const pIn = polar(c, inside, s.a);
+          return (
+            <>
+              <line x1={s.x1} y1={s.y1} x2={pIn.x} y2={pIn.y} class="g-line g-draw" />
+              {s.len > budgetR && <line x1={pIn.x} y1={pIn.y} x2={s.x2} y2={s.y2} class="g-ghost" />}
+            </>
+          );
+        })}
+        <circle cx={c} cy={c} r={budgetR} class="g-ring g-draw" />
+      </g>
+    )
+  }
+  {
+    kind === "cite" && (
+      <g>
+        {spokes.map((s) => (
+          <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} class="g-ghost" />
+        ))}
+        <line x1={c} y1={c} x2={citeTip.x} y2={citeTip.y} class="g-blue-line g-draw" />
+        <rect x={citeTip.x - 4} y={citeTip.y - 4} width="8" height="8" class="g-blue" />
+        <path d={`M${citeTip.x + 9} ${citeTip.y - 9}h6v18h-6`} class="g-line g-draw" />
+      </g>
+    )
+  }
+  {
+    kind === "mcp" && (
+      <g>
+        <circle cx={c} cy={c} r="50" class="g-line g-draw" />
+        <circle cx={c} cy={c} r="30" class="g-line g-draw" />
+        {spokes.slice(0, 24).map((s, i) => {
+          const a = polar(c, 30, s.a);
+          const b = polar(c, 50, s.a);
+          return <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} class={i % 6 === 0 ? "g-blue-line" : "g-ghost"} />;
+        })}
+        <rect x={c - 5} y={c - 5} width="10" height="10" class="g-ink" />
+      </g>
+    )
+  }
+  {
+    kind === "cli" && (
+      <g>
+        {cliRows.map((y, i) => (
+          <line x1="16" y1={y} x2={16 + ((i * 37) % 70) + 18} y2={y} class={i === 3 ? "g-blue-line g-draw" : "g-line g-draw"} />
+        ))}
+        <rect x="16" y="100" width="8" height="2" class="g-blue" />
+      </g>
+    )
+  }
+  {
+    kind === "disc" && (
+      <g>
+        <circle cx={c} cy={c} r="54" class="g-line" />
+        {disc.map((s, i) => (
+          <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} class={i % 21 === 4 ? "g-blue-line" : s.len > 40 ? "g-line" : "g-ghost"} />
+        ))}
+      </g>
+    )
+  }
+  {
+    kind === "desktop" && (
+      <g>
+        <rect x="10" y="22" width="100" height="70" class="g-line g-draw" />
+        <line x1="10" y1="34" x2="110" y2="34" class="g-line" />
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <rect x={18 + i * 15} y="40" width="11" height="4" class={i === 4 ? "g-blue" : "g-dim"} />
+        ))}
+        <circle cx="60" cy="68" r="14" class="g-line g-draw" />
+        <line x1="60" y1="68" x2="70" y2="58" class="g-blue-line" />
+        <line x1="44" y1="104" x2="76" y2="104" class="g-line" />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .glyph {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .glyph :global(.g-line),
+  .glyph :global(.g-ring) {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  .glyph :global(.g-ring) {
+    stroke: var(--ink);
+    opacity: 0.9;
+  }
+  .glyph :global(.g-ghost) {
+    fill: none;
+    stroke: var(--ink-3);
+    stroke-width: 1;
+    stroke-dasharray: 2 2.5;
+    opacity: 0.7;
+    vector-effect: non-scaling-stroke;
+  }
+  .glyph :global(.g-blue-line) {
+    fill: none;
+    stroke: var(--blue);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+  .glyph :global(.g-blue) {
+    fill: var(--blue);
+  }
+  .glyph :global(.g-ink) {
+    fill: var(--ink);
+  }
+  .glyph :global(.g-dim) {
+    fill: var(--grey-block);
+  }
+</style>

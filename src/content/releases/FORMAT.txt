@@ -1,0 +1,29 @@
+Catálogo de versões do Alexandria
+=================================
+
+Cada versão pública é um arquivo .json (ou .md com frontmatter) nesta pasta.
+Somente entradas com "published": true aparecem em /download e /en/download.
+O esquema completo está em src/content.config.ts.
+
+Exemplo (alx-101.json):
+
+{
+  "catalog": "ALX 101",
+  "version": "0.6.0-beta.1",
+  "channel": "beta",
+  "published": true,
+  "files": [
+    {
+      "platform": "Linux x86_64",
+      "format": "AppImage",
+      "name": "Alexandria-0.6.0-beta.1-x86_64.AppImage",
+      "url": "https://github.com/OWNER/REPO/releases/download/v0.6.0-beta.1/Alexandria-0.6.0-beta.1-x86_64.AppImage",
+      "sha256": "<64 caracteres hexadecimais>",
+      "size": "120 MB"
+    }
+  ],
+  "notes": {
+    "pt-br": "Resumo da versão em português.",
+    "en": "Release summary in English."
+  }
+}

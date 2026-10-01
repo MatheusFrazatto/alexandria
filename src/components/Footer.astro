@@ -1,0 +1,133 @@
+---
+import Mark from "./Mark.astro";
+import Wordmark from "./Wordmark.astro";
+import { href, t, type Locale } from "../i18n";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const d = t(locale);
+const licenses = [
+  { label: "Saira", file: "Saira-OFL.txt" },
+  { label: "Manrope", file: "Manrope-OFL.txt" },
+  { label: "Martian Mono", file: "MartianMono-OFL.txt" },
+  { label: "anime.js", file: "animejs-MIT.txt" },
+];
+---
+
+<footer class="footer">
+  <div class="wrap footer__sign" data-sign>
+    <Mark id="footer-sign" class="footer__sign-mark" />
+    <p class="footer__sign-line" lang="en" data-sign-line>{d.hero.tagline}</p>
+  </div>
+  <div class="wrap footer__inner">
+    <div class="footer__id">
+      <Mark id="footer" class="footer__mark" />
+      <Wordmark class="footer__wordmark" />
+    </div>
+
+    <div class="footer__cols">
+      <p class="footer__line">
+        {d.status.maintainer} <a href="https://github.com/MatheusFrazatto" rel="author">Matheus Frazatto</a>
+      </p>
+      <p class="footer__line">{d.footer.privacy}</p>
+      <p class="footer__line">
+        {d.footer.licenses}{" "}
+        {
+          licenses.map((l, i) => (
+            <>
+              <a href={href(`/licenses/${l.file}`)}>{l.label}</a>
+              {i < licenses.length - 2 ? ", " : i === licenses.length - 2 ? ` ${d.footer.and} ` : "."}
+            </>
+          ))
+        }
+      </p>
+    </div>
+
+    <p class="footer__alpha">
+      <span class="block" data-state="out" aria-hidden="true"></span>
+      <span class="engraved">{d.ui.alpha}</span>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line-2);
+    padding-block: 0 clamp(2.5rem, 5vw, 4rem);
+  }
+  /* Assinatura: a marca e o slogan fecham o catálogo. */
+  .footer__sign {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    padding-block: clamp(4rem, 9vw, 7.5rem);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .footer__sign :global(.footer__sign-mark) {
+    width: clamp(4.5rem, 9vw, 8rem);
+    height: auto;
+    max-width: none;
+  }
+  .footer__sign-line {
+    font-family: var(--font-read);
+    font-size: clamp(2rem, 1rem + 3.6vw, 4.75rem);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    text-wrap: balance;
+    max-width: 18ch;
+  }
+  .footer__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+    gap: 2rem clamp(1.5rem, 4vw, 4rem);
+    align-items: start;
+  }
+  .footer__id {
+    display: flex;
+    gap: 1.1rem;
+    align-items: center;
+  }
+  .footer__id :global(.footer__mark) {
+    flex: none;
+    max-width: none;
+    width: 2rem;
+    height: 2rem;
+  }
+  .footer__id {
+    font-size: 1.6rem;
+  }
+  .footer__cols {
+    display: grid;
+    gap: 0.6rem;
+    font-size: 0.875rem;
+  }
+  .footer__cols a:hover {
+    color: var(--blue-text);
+  }
+  .footer__alpha {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .footer__alpha .engraved {
+    font-size: 0.625rem;
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 900px) {
+    .footer__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .footer__sign {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

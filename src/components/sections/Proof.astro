@@ -1,0 +1,267 @@
+---
+import CatHead from "../CatHead.astro";
+import type { Dict } from "../../i18n";
+
+interface Props {
+  d: Dict;
+}
+const { d } = Astro.props;
+const p = d.proof;
+---
+
+<section class="section proof" id="prova" aria-labelledby="prova-title" data-section="prova">
+  <div class="wrap section__grid">
+    <header class="section__head proof__head">
+      <CatHead id="prova-title" no={p.no} name={p.name} />
+      <p class="statement proof__statement">{p.statement}</p>
+      <p class="prose proof__body">{p.body}</p>
+
+      <div class="proof__tabs" role="tablist" aria-label={p.tabsLabel} data-proof-tabs hidden>
+        <button class="proof__tab" type="button" role="tab" id="proof-tab-a" aria-controls="proof-panel-a" aria-selected="true" data-proof-tab="a">
+          <span class="block" data-state="approved" aria-hidden="true"></span>
+          {p.tabGrounded}
+        </button>
+        <button class="proof__tab" type="button" role="tab" id="proof-tab-b" aria-controls="proof-panel-b" aria-selected="false" tabindex="-1" data-proof-tab="b">
+          <span class="block" data-state="out" aria-hidden="true"></span>
+          {p.tabNone}
+        </button>
+      </div>
+    </header>
+
+    <div class="section__body proof__records" data-proof>
+      <article class="record" id="proof-panel-a" role="tabpanel" aria-labelledby="proof-tab-a" data-proof-panel="a">
+        <header class="record__head">
+          <span class="record__no cat-no">003.A</span>
+          <span class="code-strip" aria-hidden="true">
+            <span class="block" data-state="approved"></span><span class="block"></span><span class="block"></span><span class="block"></span><span class="block"></span>
+          </span>
+        </header>
+        <p class="record__label engraved">{p.question}</p>
+        <p class="record__query">{p.grounded.query}</p>
+        <p class="record__status">
+          <span class="block" data-state="approved" aria-hidden="true"></span>
+          <span class="engraved">{p.grounded.status}</span>
+          <span class="record__summary data">{p.grounded.summary}</span>
+        </p>
+        <dl class="record__table">
+          {
+            p.grounded.rows.map((r) => (
+              <div class="record__row" data-record-row>
+                <dt>{r.k}</dt>
+                <dd class="data">{r.v}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </article>
+
+      <article class="record record--none" id="proof-panel-b" role="tabpanel" aria-labelledby="proof-tab-b" data-proof-panel="b">
+        <header class="record__head">
+          <span class="record__no cat-no">003.B</span>
+          <span class="code-strip" aria-hidden="true">
+            <span class="block"></span><span class="block"></span><span class="block"></span><span class="block"></span><span class="block"></span>
+          </span>
+        </header>
+        <p class="record__label engraved">{p.question}</p>
+        <p class="record__query">{p.none.query}</p>
+        <div class="record__void">
+          <p class="record__status">
+            <span class="block" data-state="out" aria-hidden="true"></span>
+            <span class="engraved">{p.none.status}</span>
+          </p>
+          <p class="record__none-text">{p.none.text}</p>
+        </div>
+      </article>
+
+      <p class="proof__disclaimer">{p.disclaimer}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .proof__statement {
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+  .proof__body {
+    margin-top: 1.5rem;
+  }
+  .proof__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2.25rem;
+  }
+  .proof__tabs[hidden] {
+    display: none;
+  }
+  .proof__tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 2.75rem;
+    padding: 0 1.1rem;
+    border: 1px solid var(--line-2);
+    background: transparent;
+    color: var(--ink-2);
+    font-family: var(--font-cat);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    font-stretch: 112%;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      color 0.3s var(--ease-out),
+      border-color 0.3s var(--ease-out);
+  }
+  .proof__tab .block {
+    width: 0.55rem;
+    height: 0.55rem;
+  }
+  .proof__tab:hover {
+    color: var(--ink);
+  }
+  .proof__tab[aria-selected="true"] {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+  .proof__tab[aria-selected="true"]::after {
+    content: "";
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    bottom: -1px;
+    width: 0.4rem;
+    background: var(--blue);
+  }
+  .proof__tab[data-proof-tab="b"][aria-selected="true"]::after {
+    background: var(--ink-3);
+  }
+
+  .proof__head {
+    grid-column: 1 / span 5;
+  }
+  .proof__records {
+    grid-column: 7 / -1;
+    display: grid;
+    gap: 1.5rem;
+    align-content: start;
+  }
+  :global([data-enhanced]) .proof__records [data-proof-panel][hidden] {
+    display: none;
+  }
+
+  .record {
+    border: 1px solid var(--line-2);
+    background: var(--black);
+    padding: clamp(1.25rem, 2.5vw, 2rem);
+  }
+  .record__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .record__no {
+    font-size: 1.6rem;
+    letter-spacing: 0.12em;
+  }
+  .record__label {
+    margin-top: 1.5rem;
+    font-size: 0.625rem;
+    color: var(--ink-3);
+  }
+  .record__query {
+    margin-top: 0.6rem;
+    font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .record__status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.8rem;
+    margin-top: 1.5rem;
+  }
+  .record__status .engraved {
+    font-size: 0.6875rem;
+  }
+  .record__summary {
+    color: var(--ink-2);
+    font-size: 0.75rem;
+  }
+  .record__table {
+    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+  }
+  .record__row {
+    display: grid;
+    gap: 0.3rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .record__row:nth-child(odd) {
+    padding-right: 1rem;
+  }
+  .record__row:nth-child(even) {
+    padding-left: 1rem;
+    border-left: 1px solid var(--line);
+  }
+  .record__row dt {
+    font-family: var(--font-cat);
+    font-size: 0.625rem;
+    font-weight: 500;
+    font-stretch: 112%;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .record__row dd {
+    overflow-wrap: anywhere;
+  }
+  .record__row:last-child dd {
+    color: var(--blue-text);
+  }
+
+  /* A abstenção ganha vazio ativo. */
+  .record__void {
+    display: grid;
+    align-content: center;
+    min-height: clamp(14rem, 26vw, 19rem);
+    padding-block: 2rem;
+  }
+  .record__none-text {
+    margin-top: 1rem;
+    max-width: 40ch;
+    color: var(--ink);
+  }
+
+  .proof__disclaimer {
+    font-size: 0.8125rem;
+    color: var(--ink-3);
+    max-width: 64ch;
+  }
+
+  @media (max-width: 1080px) {
+    .proof__head,
+    .proof__records {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 520px) {
+    .record__table {
+      grid-template-columns: 1fr;
+    }
+    .record__row:nth-child(n) {
+      padding-inline: 0;
+      border-left: 0;
+    }
+  }
+</style>

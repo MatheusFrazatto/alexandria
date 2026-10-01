@@ -1,0 +1,15 @@
+---
+interface Props {
+  id: string;
+  no: string;
+  name: string;
+  level?: 1 | 2;
+}
+const { id, no, name, level = 2 } = Astro.props;
+const Tag = level === 1 ? "h1" : "h2";
+---
+
+<Tag class="cat-head" id={id}>
+  <span class="cat-head__no cat-no" data-cat-no>{no}</span>
+  <span class="cat-head__name">{name}</span>
+</Tag>

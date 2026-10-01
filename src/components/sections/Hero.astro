@@ -1,0 +1,263 @@
+---
+import QueryPlot from "../QueryPlot.astro";
+import Glyph from "../Glyph.astro";
+import Wordmark from "../Wordmark.astro";
+import type { Dict } from "../../i18n";
+
+interface Props {
+  d: Dict;
+}
+const { d } = Astro.props;
+const next = d.sections.slice(1, 4);
+---
+
+<section class="hero" id="inicio" aria-labelledby="hero-title" data-section="inicio">
+  <div class="hero__grid wrap">
+    <div class="hero__lead">
+      <div class="hero__copy">
+        <h1 class="hero__title" id="hero-title">
+          <Wordmark class="hero__wordmark" />
+          <span class="hero__strap engraved" data-hero-strap>{d.hero.strap}</span>
+        </h1>
+
+        <p class="hero__lede prose" data-hero-copy>{d.hero.lede}</p>
+
+        <div class="hero__actions" data-hero-copy>
+          <a class="action" href="#problema">
+            {d.ui.open}
+            <svg viewBox="0 0 24 12" aria-hidden="true"><path d="M0 6h22M17 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.25"></path></svg>
+          </a>
+          <span class="hero__badge engraved">{d.ui.alpha}</span>
+        </div>
+      </div>
+
+      <div class="hero__key" data-hero-copy>
+        <ul class="legend hero__legend">
+          <li><span class="block" data-state="approved"></span>{d.states.approved}</li>
+          <li><span class="block" data-state="review"></span>{d.states.review}</li>
+          <li><span class="block" data-state="quarantine"></span>{d.states.quarantine}</li>
+          <li><span class="block" data-state="out"></span>{d.states.out}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="hero__fig">
+      <QueryPlot d={d} />
+    </div>
+  </div>
+
+  <nav class="hero__next" aria-label={d.hero.next}>
+    <ol class="hero__next-list wrap">
+      {
+        next.map((s, i) => (
+          <li>
+            <a class="next-cell" href={`#${s.id}`}>
+              <span class="next-cell__no cat-no">{s.no}</span>
+              <span class="next-cell__name engraved">{s.name}</span>
+              <span class="next-cell__strip code-strip" aria-hidden="true">
+                {Array.from({ length: 8 }, (_, b) => (
+                  <span class="block" data-state={b === i + 1 ? "approved" : undefined} />
+                ))}
+              </span>
+              <span class="next-cell__disc">
+                <Glyph kind="disc" seed={(i + 2) * 131} />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: calc(100svh - 4rem);
+    display: grid;
+    grid-template-rows: 1fr auto;
+  }
+  .hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: center;
+    column-gap: clamp(2rem, 4vw, 5rem);
+    padding-block: clamp(1.5rem, 4vh, 3rem);
+  }
+  /* Texto e legenda formam um bloco centrado na altura do plot. */
+  .hero__lead {
+    display: grid;
+    gap: 2.5rem;
+    align-content: center;
+  }
+
+  /* O tamanho mora no h1: o wordmark herda, a linha de apoio tem o próprio. */
+  .hero__title {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.25rem, 2vw, 1.75rem);
+    margin: 0;
+    font-size: clamp(4rem, 1.4rem + 6.8vw, 8.25rem);
+    font-weight: inherit;
+    line-height: 1;
+  }
+  .hero__title > :first-child {
+    margin-left: -0.055em;
+  }
+  .hero__strap {
+    font-size: clamp(0.8125rem, 0.7rem + 0.45vw, 1.0625rem);
+    letter-spacing: 0.3em;
+    max-width: 34ch;
+  }
+
+  .hero__lede {
+    margin-top: clamp(1.75rem, 3vw, 2.5rem);
+    max-width: 46ch;
+    font-size: 1.125rem;
+    color: var(--ink-2);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.75rem;
+    margin-top: 2.25rem;
+  }
+  .hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.6875rem;
+    color: var(--ink-2);
+  }
+  .hero__badge::before {
+    content: "";
+    width: 0.45rem;
+    height: 0.45rem;
+    border: 1px solid var(--ink-2);
+    transform: rotate(45deg);
+  }
+
+  .hero__legend {
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+    max-width: 36rem;
+    font-size: 0.8125rem;
+  }
+
+  /* O plot se dimensiona pela altura para a faixa de entradas caber na dobra. */
+  .hero__fig {
+    width: min(100%, calc(100svh - 22rem), 46rem);
+    min-width: min(100%, 24rem);
+    justify-self: center;
+  }
+
+  .hero__next {
+    border-top: 1px solid var(--line);
+  }
+  .hero__next-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .hero__next-list > li + li {
+    border-left: 1px solid var(--line);
+  }
+  .next-cell {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.6rem 1rem;
+    padding: 1.5rem clamp(1rem, 2vw, 2rem) 1.6rem;
+    color: var(--ink);
+    text-decoration: none;
+    transition: background-color 0.4s var(--ease-out);
+  }
+  .hero__next-list > li:first-child .next-cell {
+    padding-left: 0;
+  }
+  .next-cell:hover {
+    background: var(--black-raised);
+  }
+  .next-cell__no {
+    font-size: 1.75rem;
+    letter-spacing: 0.12em;
+  }
+  .next-cell__name {
+    grid-column: 1;
+    font-size: 0.6875rem;
+    color: var(--ink-2);
+  }
+  .next-cell__strip {
+    grid-column: 1;
+    margin-top: 0.5rem;
+  }
+  .next-cell__strip .block {
+    width: 0.55rem;
+    height: 0.55rem;
+  }
+  /* O disco gira devagar quando a entrada é apontada, como um disco na vitrola. */
+  .next-cell__disc {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
+    width: 3.75rem;
+    opacity: 0.85;
+    transition:
+      opacity 0.3s var(--ease-out),
+      transform 1.6s var(--ease-out);
+  }
+  .next-cell:hover .next-cell__disc,
+  .next-cell:focus-visible .next-cell__disc {
+    opacity: 1;
+    transform: rotate(120deg);
+  }
+
+  @media (max-width: 1080px) {
+    /* Título, figura, texto: o plot aparece antes da legenda que o explica. */
+    .hero__grid {
+      grid-template-columns: 1fr;
+    }
+    .hero__lead,
+    .hero__copy {
+      display: contents;
+    }
+    .hero__title {
+      order: 1;
+    }
+    .hero__fig {
+      order: 2;
+      width: min(100%, 36rem);
+      min-width: 0;
+      margin-top: 1.5rem;
+    }
+    .hero__lede {
+      order: 3;
+    }
+    .hero__actions {
+      order: 4;
+    }
+    .hero__key {
+      order: 5;
+      margin-top: 2.5rem;
+    }
+  }
+  @media (max-width: 720px) {
+    .hero__next-list {
+      grid-template-columns: 1fr;
+    }
+    .hero__next-list > li + li {
+      border-left: 0;
+      border-top: 1px solid var(--line);
+    }
+    .next-cell {
+      padding-inline: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .next-cell:hover .next-cell__disc,
+    .next-cell:focus-visible .next-cell__disc {
+      transform: none;
+    }
+  }
+</style>

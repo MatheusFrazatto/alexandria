@@ -1,0 +1,312 @@
+---
+import MarkPaths from "./MarkPaths.astro";
+import { queryPlot } from "../lib/plots";
+import type { Dict } from "../i18n";
+
+interface Props {
+  d: Dict;
+}
+const { d } = Astro.props;
+const plot = queryPlot();
+const pct = (n: number) => `${((n / plot.size) * 100).toFixed(2)}%`;
+const tip = plot.selectedTip;
+// O rótulo abre para dentro do campo, nunca para fora da coluna.
+const labelRight = tip.x < plot.size * 0.5;
+const tips = plot.spokes.filter((s) => s.kind !== "eligible" && s.kind !== "ghost");
+---
+
+<figure class="qplot" data-qplot data-state="grounded" aria-labelledby="qplot-caption">
+  <div class="qplot__stage">
+    <svg class="qplot__svg" viewBox={`0 0 ${plot.size} ${plot.size}`} role="img" aria-label={d.hero.plotLabel}>
+      <g class="qplot__ticks" aria-hidden="true">
+        {
+          plot.ticks.map((tk) => (
+            <line x1={tk.x1} y1={tk.y1} x2={tk.x2} y2={tk.y2} class={tk.major ? "tick tick--major" : "tick"} vector-effect="non-scaling-stroke" />
+          ))
+        }
+      </g>
+      <circle class="qplot__ring" cx={plot.center} cy={plot.center} r={plot.ring} vector-effect="non-scaling-stroke" data-qplot-ring></circle>
+      <g class="qplot__spokes" aria-hidden="true">
+        {
+          plot.spokes.map((s) => (
+            <line
+              class={`spoke spoke--${s.kind}`}
+              x1={s.x1}
+              y1={s.y1}
+              x2={s.x2}
+              y2={s.y2}
+              data-angle={s.angle.toFixed(4)}
+              data-len={s.length}
+              data-kind={s.kind}
+              vector-effect="non-scaling-stroke"
+            />
+          ))
+        }
+      </g>
+      <g class="qplot__tips" aria-hidden="true">
+        {
+          tips.map((s) =>
+            s.kind === "selected" ? (
+              <circle class="tip tip--selected" cx={s.x2} cy={s.y2} r="5" data-tip />
+            ) : (
+              <rect class={`tip tip--${s.kind}`} x={s.x2 - 4.5} y={s.y2 - 4.5} width="9" height="9" data-tip />
+            ),
+          )
+        }
+      </g>
+      <line
+        class="qplot__sweep"
+        x1={plot.center}
+        y1={plot.center - plot.inner}
+        x2={plot.center}
+        y2={plot.center - plot.ring}
+        vector-effect="non-scaling-stroke"
+        aria-hidden="true"
+        data-qplot-sweep></line>
+      <!-- A biblioteca no centro do evento: a marca arquitetônica canônica. -->
+      <g class="qplot__core" aria-hidden="true" data-qplot-core>
+        <circle cx={plot.center} cy={plot.center} r={plot.inner - 8} class="qplot__core-ring" vector-effect="non-scaling-stroke"></circle>
+        <g transform={`translate(${plot.center - 26} ${plot.center - 26}) scale(${52 / 72})`}>
+          <MarkPaths id="qplot" />
+        </g>
+      </g>
+    </svg>
+
+    <p
+      class:list={["qplot__pin", labelRight ? "qplot__pin--right" : "qplot__pin--left"]}
+      style={`left:${pct(tip.x)};top:${pct(tip.y)}`}
+      data-qplot-pin
+    >
+      <span class="qplot__pin-rule" aria-hidden="true"></span>
+      <span class="qplot__pin-body">
+        <span class="data">{d.hero.handle}</span>
+        <span class="qplot__pin-path">{d.hero.handlePath}</span>
+      </span>
+    </p>
+
+    <p class="qplot__status engraved" data-qplot-status>
+      <span class="block" data-state="approved" data-qplot-status-block></span>
+      <span data-qplot-status-text data-grounded={d.hero.grounded} data-none={d.hero.none}>{d.hero.grounded}</span>
+    </p>
+  </div>
+
+  <figcaption class="fig-caption" id="qplot-caption">
+    <span class="engraved">{d.hero.figTitle}</span>
+    <span class="qplot__query">
+      <span class="visually-hidden">{d.proof.question}. </span>
+      <q data-qplot-query data-a={d.hero.queryA} data-b={d.hero.queryB}>{d.hero.queryA}</q>
+    </span>
+    <span class="qplot__illus">{d.ui.illustrative}</span>
+    <button class="qplot__toggle" type="button" data-qplot-toggle data-pause={d.ui.pause} data-play={d.ui.play} hidden>
+      <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2h2v8H3zM7 2h2v8H7z"></path></svg>
+      <span data-qplot-toggle-text>{d.ui.pause}</span>
+    </button>
+  </figcaption>
+</figure>
+
+<style>
+  .qplot {
+    position: relative;
+    width: 100%;
+  }
+  .qplot__stage {
+    position: relative;
+    aspect-ratio: 1;
+  }
+  .qplot__svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .tick {
+    stroke: var(--ink-3);
+    stroke-width: 1;
+    opacity: 0.55;
+  }
+  .tick--major {
+    stroke: var(--ink);
+    opacity: 0.8;
+  }
+  .qplot__ring {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1;
+    opacity: 0.85;
+  }
+  .qplot__core-ring {
+    fill: var(--black);
+    stroke: var(--line-2);
+    stroke-width: 1;
+  }
+  /* Ponteiro de varredura: percorre o acervo enquanto a consulta roda. */
+  .qplot__sweep {
+    stroke: var(--blue-text);
+    stroke-width: 1;
+    opacity: 0;
+    transform-box: view-box;
+    transform-origin: 50% 50%;
+  }
+  .qplot[data-state="none"] .qplot__sweep {
+    stroke: var(--ink-3);
+  }
+
+  .spoke {
+    stroke-linecap: butt;
+    transition: opacity 0.6s var(--ease-out);
+  }
+  .spoke--eligible {
+    stroke: var(--ink);
+    stroke-width: 0.75;
+    opacity: 0.7;
+  }
+  .spoke--ghost {
+    stroke: var(--ghost);
+    stroke-width: 1;
+    stroke-dasharray: 2 5;
+  }
+  .spoke--selected {
+    stroke: var(--blue);
+    stroke-width: 2.6;
+  }
+  .spoke--review {
+    stroke: var(--yellow);
+    stroke-width: 1.6;
+  }
+  .spoke--quarantine {
+    stroke: var(--red);
+    stroke-width: 1.6;
+  }
+  .tip--selected {
+    fill: var(--blue);
+  }
+  .tip--review {
+    fill: var(--yellow);
+  }
+  .tip--quarantine {
+    fill: var(--red);
+  }
+
+  /* Pino da citação: texto HTML preso à ponta do raio escolhido. */
+  .qplot__pin {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .qplot__pin--left {
+    flex-direction: row-reverse;
+    transform: translate(-100%, -50%);
+  }
+  .qplot__pin-rule {
+    display: block;
+    width: clamp(1.5rem, 4vw, 3.25rem);
+    height: 1px;
+    background: var(--blue);
+  }
+  .qplot__pin-body {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.55rem 0.75rem;
+    background: var(--black);
+    border: 1px solid var(--blue);
+    white-space: nowrap;
+  }
+  .qplot__pin-path {
+    font-size: 0.75rem;
+    color: var(--ink-2);
+  }
+
+  .qplot__status {
+    position: absolute;
+    left: 50%;
+    bottom: -0.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    transform: translateX(-50%);
+    padding: 0.4rem 0.75rem;
+    background: var(--black);
+    font-size: 0.6875rem;
+    white-space: nowrap;
+  }
+
+  .qplot[data-state="none"] .qplot__pin {
+    opacity: 0;
+  }
+
+  .qplot figcaption {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "title toggle"
+      "query illus";
+    gap: 0.4rem 1.25rem;
+    margin-top: 1rem;
+  }
+  .qplot figcaption > .engraved {
+    grid-area: title;
+    align-self: center;
+  }
+  .qplot__toggle {
+    grid-area: toggle;
+    justify-self: end;
+  }
+  .qplot__illus {
+    grid-area: illus;
+    justify-self: end;
+    align-self: baseline;
+  }
+  .qplot__query {
+    grid-area: query;
+    color: var(--ink);
+  }
+  .qplot__query q {
+    quotes: "“" "”";
+  }
+  .qplot__illus {
+    font-size: 0.75rem;
+    color: var(--ink-3);
+  }
+  .qplot__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--line-2);
+    background: transparent;
+    color: var(--ink-2);
+    font-family: var(--font-cat);
+    font-size: 0.625rem;
+    font-weight: 500;
+    font-stretch: 112%;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .qplot__toggle:hover {
+    color: var(--ink);
+    border-color: var(--ink-3);
+  }
+  .qplot__toggle svg {
+    width: 0.7rem;
+    fill: currentColor;
+  }
+  .qplot__toggle[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 560px) {
+    .qplot__pin-rule {
+      width: 1rem;
+    }
+    .qplot__pin-body {
+      padding: 0.4rem 0.55rem;
+    }
+    .qplot__pin-path {
+      font-size: 0.6875rem;
+    }
+  }
+</style>

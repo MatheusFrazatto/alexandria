@@ -1,191 +1,179 @@
-import { existsSync, readFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+// Validação do artefato publicado (dist/): estrutura, links, privacidade, afirmações públicas e paridade de idiomas.
+// Uso: npm run build && npm run validate
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const siteRoot = join(repositoryRoot, "docs");
+const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const dist = join(root, "dist");
+const base = (process.env.BASE_PATH ?? "/").replace(/\/?$/, "/");
+
+const pages = {
+  "pt-home": "index.html",
+  "en-home": "en/index.html",
+  "pt-download": "download/index.html",
+  "en-download": "en/download/index.html",
+  "404": "404.html",
+};
 
 const requiredFiles = [
-  "index.html",
-  "404.html",
-  ".nojekyll",
-  "assets/styles.css",
-  "assets/mark.svg",
-  "assets/favicon.svg",
-  "assets/og-alexandria.png",
-  "assets/fonts/Manrope-Variable.ttf",
-  "assets/fonts/OFL.txt",
+  ...Object.values(pages),
+  "mark.svg",
+  "og.png",
+  "licenses/Saira-OFL.txt",
+  "licenses/Manrope-OFL.txt",
+  "licenses/MartianMono-OFL.txt",
+  "licenses/animejs-MIT.txt",
 ];
 
-const requiredSections = [
-  "inicio",
-  "problema",
-  "como-funciona",
-  "principios",
-  "limites",
-  "status",
-];
+const requiredSections = ["inicio", "problema", "como-funciona", "prova", "interfaces", "principios", "hoje-e-proximo", "estado"];
 
-const requiredCopy = [
-  "A mesma fonte. O contexto certo. A versão comprovável.",
-  "Memória que não depende da conversa.",
-  "contexto governado para agentes de IA",
-  "repositório Git",
-  "índice local é descartável",
-  "Responsabilidade",
-  "Rastreabilidade",
-  "Determinismo",
-  "Quando não existe evidência aprovada",
-  "Alpha por convite",
-  "ainda não indicado para produção",
-  "Don’t let your library burn down",
-];
+const allowedExternal = [/^https:\/\/github\.com\/MatheusFrazatto\/?$/];
 
 const forbiddenMarkup = [
   [/<form\b/i, "formulário"],
   [/<input\b/i, "campo de entrada"],
-  [/<button\b/i, "botão"],
   [/<iframe\b/i, "embed de terceiro"],
-  [/<script\b/i, "JavaScript cliente"],
-  [/\b(?:analytics|gtag|segment|hotjar|mixpanel)\b/i, "analytics"],
+  [/\b(?:gtag|googletagmanager|google-analytics|plausible|segment\.com|hotjar|mixpanel|clarity\.ms)\b/i, "analytics"],
+  [/document\.cookie|localStorage|sessionStorage/, "armazenamento no navegador"],
 ];
 
+// Afirmações que o produto proíbe. Ocorrências legítimas ficam na lista de permitidas.
 const forbiddenClaims = [
-  /elimina(?:r|mos)? alucinações/i,
-  /sempre atualizad[oa]/i,
-  /respostas? determinísticas?/i,
   /pronto para produção/i,
-  /suporte (?:oficial )?(?:a|para) (?:qualquer|todos)/i,
+  /production[- ]ready/i,
+  /\bbeta\b/i,
+  /\brelease candidate\b/i,
+  /\bstable\b/i,
+  /\bestável\b/i,
+  /oficialmente suportad/i,
+  /officially supported/i,
+  /\bclientes?\b/i,
+  /\bcustomers?\b/i,
+  /\bbenchmark/i,
+];
+const allowedClaimContexts = [
+  /antes de qualquer Beta/i,
+  /before any Beta/i,
 ];
 
-function read(relativePath) {
-  return readFileSync(join(siteRoot, relativePath), "utf8");
+// Nada do contrato de direção ou de identificadores normativos privados no artefato.
+const leaks = [
+  /Direction contract/i,
+  /\bTHESIS:/,
+  /\bOWN-WORLD\b/,
+  /\bFIRST VIEWPORT:/,
+  /seed key/i,
+  /\b(?:PRD|DOM|GOV|INT|REL|DEL|OPS|REP|RET|IDX)-[A-Z]+-\d{2}\b/,
+];
+
+const errors = [];
+const fail = (msg) => errors.push(msg);
+
+function walk(dir) {
+  return readdirSync(dir).flatMap((name) => {
+    const p = join(dir, name);
+    return statSync(p).isDirectory() ? walk(p) : [p];
+  });
 }
 
-function relativeLuminance(hex) {
-  const channels = hex
-    .replace("#", "")
-    .match(/.{2}/g)
-    .map((value) => Number.parseInt(value, 16) / 255)
-    .map((value) => (value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4));
-  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+const visibleText = (html) =>
+  html
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&[a-z#0-9]+;/gi, " ")
+    .replace(/\s+/g, " ");
+
+if (!existsSync(dist)) {
+  console.error("dist/ não existe. Rode `npm run build` antes.");
+  process.exit(1);
 }
 
-function contrastRatio(foreground, background) {
-  const a = relativeLuminance(foreground);
-  const b = relativeLuminance(background);
-  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+for (const file of requiredFiles) {
+  if (!existsSync(join(dist, file))) fail(`arquivo obrigatório ausente: ${file}`);
 }
 
-export function validateSite() {
-  const errors = [];
+const htmlFiles = walk(dist).filter((f) => f.endsWith(".html"));
+const allFiles = new Set(walk(dist).map((f) => relative(dist, f).replace(/\\/g, "/")));
 
-  for (const relativePath of requiredFiles) {
-    if (!existsSync(join(siteRoot, relativePath))) {
-      errors.push(`Arquivo obrigatório ausente: docs/${relativePath}`);
+function resolveInternal(url) {
+  if (!url.startsWith(base)) return null;
+  let path = decodeURI(url.slice(base.length).split("#")[0].split("?")[0]);
+  if (path === "" || path.endsWith("/")) path += "index.html";
+  return path;
+}
+
+for (const file of htmlFiles) {
+  const rel = relative(dist, file).replace(/\\/g, "/");
+  const html = readFileSync(file, "utf8");
+
+  for (const [pattern, label] of forbiddenMarkup) if (pattern.test(html)) fail(`${rel}: ${label} não é permitido`);
+  for (const pattern of leaks) if (pattern.test(html)) fail(`${rel}: vazamento de material de desenvolvimento (${pattern})`);
+
+  if (!/<html lang="(pt-BR|en)"/.test(html)) fail(`${rel}: <html lang> ausente ou inesperado`);
+  if ((html.match(/<h1\b/g) ?? []).length !== 1) fail(`${rel}: deve ter exatamente um <h1>`);
+  if (!/<title>[^<]{10,}<\/title>/.test(html)) fail(`${rel}: <title> ausente`);
+  if (!/<meta name="description" content="[^"]{40,}"/.test(html)) fail(`${rel}: meta description ausente`);
+  if (!/class="skip-link"/.test(html)) fail(`${rel}: skip link ausente`);
+
+  // Scripts e estilos: só arquivos do próprio site.
+  for (const [, src] of html.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)) {
+    if (/^(https?:)?\/\//.test(src)) fail(`${rel}: script externo ${src}`);
+  }
+  for (const [tag, href] of html.matchAll(/<link\b[^>]*\shref="([^"]+)"[^>]*>/g)) {
+    if (/^(https?:)?\/\//.test(href) && !/rel="(canonical|alternate)"/.test(tag)) fail(`${rel}: recurso externo ${href}`);
+  }
+
+  // Links e recursos internos precisam existir; externos só os permitidos.
+  for (const [, attr, url] of html.matchAll(/\s(href|src)="([^"]+)"/g)) {
+    if (url.startsWith("#") || url.startsWith("data:") || url.startsWith("mailto:")) continue;
+    if (/^https?:\/\//.test(url)) {
+      const tag = html.slice(Math.max(0, html.indexOf(url) - 200), html.indexOf(url));
+      if (/rel="(canonical|alternate)"|property="og:/.test(tag)) continue;
+      if (!allowedExternal.some((p) => p.test(url))) fail(`${rel}: link externo não permitido ${url}`);
+      continue;
     }
-  }
-
-  if (!existsSync(join(siteRoot, "index.html")) || !existsSync(join(siteRoot, "assets/styles.css"))) {
-    return errors;
-  }
-
-  const html = read("index.html");
-  const css = read("assets/styles.css");
-
-  const checks = [
-    [/<html\s+lang="pt-BR"/i, "O documento deve declarar lang=pt-BR."],
-    [/<meta\s+charset="utf-8"/i, "A codificação UTF-8 deve ser declarada."],
-    [/name="viewport"/i, "A viewport responsiva deve ser declarada."],
-    [/name="description"/i, "A descrição de busca deve existir."],
-    [/property="og:title"/i, "O título Open Graph deve existir."],
-    [/property="og:description"/i, "A descrição Open Graph deve existir."],
-    [/property="og:image"\s+content="\.\/assets\/og-alexandria\.png"/i, "A prévia social deve usar caminho relativo."],
-    [/<a\s+class="skip-link"\s+href="#conteudo"/i, "O link para pular ao conteúdo deve existir."],
-    [/<main\s+id="conteudo"/i, "O landmark principal deve ter o alvo do skip link."],
-    [/@font-face/i, "A fonte editorial local deve ser declarada."],
-    [/prefers-reduced-motion:\s*reduce/i, "A preferência por movimento reduzido deve ser respeitada."],
-    [/:focus-visible/i, "O foco por teclado deve ser tematizado."],
-    [/@media\s*\([^)]*max-width:\s*48rem/i, "O breakpoint móvel deve existir."],
-    [/overflow-wrap:\s*(?:anywhere|break-word)/i, "A cópia expandida deve poder refluir."],
-  ];
-
-  for (const [pattern, message] of checks) {
-    const source = message.includes("fonte") || message.includes("movimento") || message.includes("foco") || message.includes("breakpoint") || message.includes("refluir") ? css : html;
-    if (!pattern.test(source)) errors.push(message);
-  }
-
-  if ((html.match(/<h1\b/gi) ?? []).length !== 1) {
-    errors.push("A página deve conter exatamente um h1.");
-  }
-
-  if ((html.match(/data-i18n="[^"]+"/g) ?? []).length < 30) {
-    errors.push("A fronteira de localização deve conter ao menos 30 chaves data-i18n.");
-  }
-
-  for (const id of requiredSections) {
-    if (!new RegExp(`<section[^>]+id="${id}"`, "i").test(html)) {
-      errors.push(`Seção obrigatória ausente: #${id}`);
+    const target = resolveInternal(url);
+    if (target === null) {
+      fail(`${rel}: ${attr} fora do base path: ${url}`);
+      continue;
     }
+    if (!allFiles.has(target)) fail(`${rel}: ${attr} quebrado: ${url}`);
   }
 
-  for (const copy of requiredCopy) {
-    if (!html.includes(copy)) errors.push(`Cópia obrigatória ausente: “${copy}”`);
-  }
-
-  for (const [pattern, label] of forbiddenMarkup) {
-    if (pattern.test(html)) errors.push(`Integração/controle proibido encontrado: ${label}.`);
-  }
-
-  for (const pattern of forbiddenClaims) {
-    if (pattern.test(html)) errors.push(`Claim público inseguro encontrado: ${pattern}.`);
-  }
-
-  for (const match of html.matchAll(/(?:href|src|content)="([^"]+)"/gi)) {
-    const value = match[1];
-    if (/^(?:https?:)?\/\//i.test(value)) errors.push(`URL externa não permitida: ${value}`);
-    if (/^\/(?!\/)/.test(value)) errors.push(`URL absoluta de raiz quebra project sites: ${value}`);
-  }
-
-  if (/<(?:a|button)\b[^>]*(?:class="[^"]*(?:cta|button)|download)/i.test(html)) {
-    errors.push("A página não pode oferecer CTA ou download.");
-  }
-
-  if (/text-overflow:\s*ellipsis/i.test(css) || /line-clamp/i.test(css)) {
-    errors.push("A cópia narrativa não pode ser truncada.");
-  }
-
-  const specimenStart = html.indexOf('class="specimen"');
-  const specimenEnd = html.indexOf("</section>", specimenStart);
-  const specimen = specimenStart >= 0 && specimenEnd >= 0 ? html.slice(specimenStart, specimenEnd) : "";
-  const specimenGlyphs = [...specimen.matchAll(/class="specimen-state__glyph"\s+aria-hidden="true">([^<]+)<\/span>/g)]
-    .map((match) => match[1]);
-  if (JSON.stringify(specimenGlyphs) !== JSON.stringify(["A", "L", "E", "X"])) {
-    errors.push("O espécime monumental deve soletrar ALEX em quatro glifos decorativos.");
-  }
-
-  if (!/aria-label="Alexandria"/i.test(html)) {
-    errors.push("A marca deve expor o nome acessível Alexandria.");
-  }
-
-  if (contrastRatio("#242B31", "#F8F7F5") < 4.5) {
-    errors.push("A combinação principal de tinta e papel não alcança contraste 4.5:1.");
-  }
-
-  if (existsSync(join(repositoryRoot, ".github", "workflows"))) {
-    errors.push("Um workflow de deployment foi encontrado sem autorização de publicação.");
-  }
-
-  return errors;
-}
-
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const errors = validateSite();
-  if (errors.length) {
-    console.error(`Validação falhou com ${errors.length} problema(s):`);
-    for (const error of errors) console.error(`- ${error}`);
-    process.exitCode = 1;
-  } else {
-    console.log("Site estático validado: estrutura, conteúdo, privacidade e ativos em conformidade.");
+  // Afirmações públicas.
+  let text = visibleText(html);
+  for (const ok of allowedClaimContexts) text = text.replace(new RegExp(ok.source, "gi"), " ");
+  for (const claim of forbiddenClaims) {
+    const m = text.match(claim);
+    if (m) fail(`${rel}: afirmação proibida "${m[0]}" em "…${text.slice(Math.max(0, m.index - 50), m.index + 50)}…"`);
   }
 }
+
+// Âncoras da home e paridade estrutural entre idiomas.
+const count = (html, re) => (html.match(re) ?? []).length;
+const ptHome = existsSync(join(dist, pages["pt-home"])) ? readFileSync(join(dist, pages["pt-home"]), "utf8") : "";
+const enHome = existsSync(join(dist, pages["en-home"])) ? readFileSync(join(dist, pages["en-home"]), "utf8") : "";
+for (const id of requiredSections) {
+  if (!ptHome.includes(`id="${id}"`)) fail(`index.html: seção #${id} ausente`);
+  if (!enHome.includes(`id="${id}"`)) fail(`en/index.html: seção #${id} ausente`);
+}
+for (const [a, b] of [
+  ["pt-home", "en-home"],
+  ["pt-download", "en-download"],
+]) {
+  const ha = readFileSync(join(dist, pages[a]), "utf8");
+  const hb = readFileSync(join(dist, pages[b]), "utf8");
+  for (const tag of ["h2", "h3", "li", "dt", "section", "a"]) {
+    const re = new RegExp(`<${tag}\\b`, "g");
+    if (count(ha, re) !== count(hb, re)) fail(`paridade ${a}/${b}: <${tag}> ${count(ha, re)} ≠ ${count(hb, re)}`);
+  }
+  if (!/hreflang="en"/.test(ha) || !/hreflang="pt-BR"/.test(ha)) fail(`${pages[a]}: hreflang ausente`);
+}
+
+if (errors.length) {
+  console.error(`✗ ${errors.length} problema(s):\n` + errors.map((e) => `  - ${e}`).join("\n"));
+  process.exit(1);
+}
+console.log(`✓ ${htmlFiles.length} páginas validadas (${allFiles.size} arquivos em dist/).`);

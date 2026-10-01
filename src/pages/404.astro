@@ -1,0 +1,61 @@
+---
+import Base from "../layouts/Base.astro";
+import { homePath, t } from "../i18n";
+
+const d = t("pt-br");
+const en = t("en");
+---
+
+<Base locale="pt-br" title={d.meta.notFoundTitle} description={d.notFound.body} page="other" current={d.notFound.no} noindex>
+  <section class="section nf" aria-labelledby="nf-title">
+    <div class="wrap nf__inner">
+      <h1 class="nf__title" id="nf-title">
+        <span class="nf__no cat-no">{d.notFound.no}</span>
+        <span class="nf__statement">{d.notFound.statement}</span>
+      </h1>
+      <p class="prose">{d.notFound.body}</p>
+      <p class="prose" lang="en">{en.notFound.statement} {en.notFound.body}</p>
+      <p class="nf__actions">
+        <a class="action" href={homePath("pt-br")}>{d.ui.backHome}</a>
+        <a class="action" href={homePath("en")} lang="en">{en.ui.backHome}</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    border-top: 0;
+    min-height: calc(100svh - 4rem);
+    display: grid;
+    align-items: center;
+  }
+  .nf__inner {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .nf__title {
+    display: grid;
+    gap: 1.25rem;
+    font-weight: inherit;
+  }
+  .nf__no {
+    font-size: clamp(4rem, 2rem + 6vw, 6rem);
+    letter-spacing: 0.1em;
+  }
+  .nf__statement {
+    font-family: var(--font-cat);
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-stretch: 112%;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+</style>

@@ -1,0 +1,150 @@
+---
+import CatHead from "../CatHead.astro";
+import type { Dict } from "../../i18n";
+
+interface Props {
+  d: Dict;
+}
+const { d } = Astro.props;
+const r = d.roadmap;
+const pad = (n: number) => String(n).padStart(2, "0");
+const groups = [
+  { key: "today", title: r.todayTitle, meta: r.todayMeta, state: "approved", label: d.states.available, items: r.today, start: 1 },
+  { key: "next", title: r.nextTitle, meta: r.nextMeta, state: "planned", label: d.states.planned, items: r.next, start: r.today.length + 1 },
+] as const;
+---
+
+<section class="section roadmap" id="hoje-e-proximo" aria-labelledby="hoje-e-proximo-title" data-section="hoje-e-proximo">
+  <div class="wrap section__grid">
+    <header class="section__head">
+      <CatHead id="hoje-e-proximo-title" no={r.no} name={r.name} />
+    </header>
+    <div class="section__body">
+      <p class="statement">{r.statement}</p>
+      <ul class="legend roadmap__legend">
+        <li><span class="block" data-state="approved"></span>{d.states.available}</li>
+        <li><span class="block" data-state="planned"></span>{d.states.planned}</li>
+      </ul>
+    </div>
+
+    {
+      groups.map((g) => (
+        <div class="ledger" data-ledger={g.key}>
+          <h3 class="ledger__head">
+            <span class="ledger__title cat-no">{g.title}</span>
+            <span class="ledger__meta engraved">{g.meta}</span>
+          </h3>
+          <ol class="ledger__rows">
+            {g.items.map((item, i) => (
+              <li class="ledger__row" data-ledger-row>
+                <span class="ledger__no">006.{pad(g.start + i)}</span>
+                <span class="ledger__state">
+                  <span class="block" data-state={g.state} />
+                  <span class="visually-hidden">{g.label}</span>
+                </span>
+                <span class="ledger__name">{item.title}</span>
+                <span class="ledger__text">{item.text}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))
+    }
+
+    <p class="roadmap__note">{r.note}</p>
+  </div>
+</section>
+
+<style>
+  .roadmap__legend {
+    margin-top: 1.75rem;
+  }
+
+  .ledger {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2rem);
+    margin-top: clamp(0.5rem, 2vw, 1.5rem);
+  }
+  .ledger__head {
+    grid-column: 1 / span 4;
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    padding-top: 1.35rem;
+    font-weight: inherit;
+  }
+  .ledger__title {
+    font-size: clamp(2rem, 1.4rem + 2vw, 3.25rem);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  [data-ledger="next"] .ledger__title {
+    color: var(--ink-2);
+  }
+  .ledger__meta {
+    font-size: 0.6875rem;
+    color: var(--ink-2);
+  }
+  .ledger__rows {
+    grid-column: 5 / -1;
+  }
+  .ledger__row {
+    display: grid;
+    grid-template-columns: 4.25rem 1.25rem minmax(0, 17rem) minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.4rem 1.25rem;
+    padding: 1.15rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .ledger__row:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .ledger__no {
+    font-family: var(--font-data);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-3);
+  }
+  .ledger__state .block {
+    width: 0.65rem;
+    height: 0.65rem;
+    transform: translateY(0.05em);
+  }
+  .ledger__name {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .ledger__text {
+    font-size: 0.9375rem;
+  }
+  [data-ledger="next"] .ledger__name {
+    color: var(--ink-2);
+  }
+
+  .roadmap__note {
+    grid-column: 5 / -1;
+    font-size: 0.875rem;
+    color: var(--ink-3);
+  }
+
+  @media (max-width: 960px) {
+    .ledger__head,
+    .ledger__rows,
+    .roadmap__note {
+      grid-column: 1 / -1;
+    }
+    .ledger__head {
+      padding-bottom: 1rem;
+    }
+  }
+  @media (max-width: 680px) {
+    .ledger__row {
+      grid-template-columns: 4rem 1.25rem minmax(0, 1fr);
+    }
+    .ledger__text {
+      grid-column: 3;
+    }
+  }
+</style>

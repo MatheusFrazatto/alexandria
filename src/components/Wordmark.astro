@@ -1,0 +1,28 @@
+---
+// Wordmark do Alexandria: "Al" em azul, o restante em tinta (mesmo desenho do site anterior).
+interface Props {
+  class?: string;
+  tag?: "span" | "strong";
+}
+const { class: className, tag = "span" } = Astro.props;
+const Tag = tag;
+---
+
+<Tag class:list={["wordmark", className]} data-wordmark>
+  <span class="wordmark__al" data-wordmark-al>Al</span><span class="wordmark__rest" data-wordmark-rest>exandria</span>
+</Tag>
+
+<style>
+  .wordmark {
+    font-family: var(--font-read);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .wordmark__al {
+    color: var(--blue-text);
+    font-weight: 650;
+  }
+</style>

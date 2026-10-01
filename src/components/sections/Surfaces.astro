@@ -1,0 +1,126 @@
+---
+import CatHead from "../CatHead.astro";
+import Glyph from "../Glyph.astro";
+import type { Dict } from "../../i18n";
+
+interface Props {
+  d: Dict;
+}
+const { d } = Astro.props;
+const s = d.surfaces;
+const kinds = ["mcp", "cli", "desktop"] as const;
+---
+
+<section class="section surfaces" id="interfaces" aria-labelledby="interfaces-title" data-section="interfaces">
+  <div class="wrap section__grid">
+    <header class="section__head">
+      <CatHead id="interfaces-title" no={s.no} name={s.name} />
+    </header>
+    <div class="section__body">
+      <p class="statement">{s.statement}</p>
+      <p class="prose surfaces__body">{s.body}</p>
+    </div>
+
+    <ul class="sleeves">
+      {
+        s.items.map((item, i) => (
+          <li class="sleeve" data-sleeve>
+            <div class="sleeve__top">
+              <h3 class="sleeve__title">
+                <span class="sleeve__no cat-no">{item.no}</span>
+                <span class="sleeve__name engraved">{item.title}</span>
+              </h3>
+              <div class="sleeve__glyph">
+                <Glyph kind={kinds[i]!} />
+              </div>
+            </div>
+            <p class="sleeve__text">{item.text}</p>
+            <ul class="sleeve__lines">
+              {item.lines.map((line) => (
+                <li>
+                  <code>{line}</code>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .surfaces__body {
+    margin-top: 1.75rem;
+  }
+  .sleeves {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border: 1px solid var(--line-2);
+    margin-top: clamp(1rem, 3vw, 2.5rem);
+  }
+  .sleeve {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: 1.5rem;
+    padding: clamp(1.25rem, 2.5vw, 2.25rem);
+    transition: background-color 0.4s var(--ease-out);
+  }
+  .sleeve + .sleeve {
+    border-left: 1px solid var(--line-2);
+  }
+  .sleeve:hover {
+    background: var(--black-raised);
+  }
+  .sleeve__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .sleeve__title {
+    display: grid;
+    gap: 0.75rem;
+    font-weight: inherit;
+  }
+  .sleeve__no {
+    font-size: clamp(2rem, 1.5rem + 1.5vw, 2.75rem);
+    letter-spacing: 0.1em;
+  }
+  .sleeve__name {
+    font-size: 0.75rem;
+  }
+  .sleeve__glyph {
+    width: clamp(4.5rem, 7vw, 6rem);
+    flex: none;
+  }
+  .sleeve__text {
+    font-size: 0.9875rem;
+    max-width: 40ch;
+  }
+  .sleeve__lines {
+    align-self: end;
+    display: grid;
+    gap: 0.1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+  .sleeve__lines code {
+    display: block;
+    padding: 0.3rem 0;
+    font-size: 0.78rem;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 960px) {
+    .sleeves {
+      grid-template-columns: 1fr;
+    }
+    .sleeve + .sleeve {
+      border-left: 0;
+      border-top: 1px solid var(--line-2);
+    }
+  }
+</style>

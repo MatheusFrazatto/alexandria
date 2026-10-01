@@ -1,0 +1,127 @@
+---
+import CatHead from "../CatHead.astro";
+import { downloadPath, type Dict, type Locale } from "../../i18n";
+
+interface Props {
+  d: Dict;
+  locale: Locale;
+}
+const { d, locale } = Astro.props;
+const s = d.status;
+---
+
+<section class="section status" id="estado" aria-labelledby="estado-title" data-section="estado">
+  <div class="wrap section__grid">
+    <header class="section__head">
+      <CatHead id="estado-title" no={s.no} name={s.name} />
+    </header>
+    <div class="section__body">
+      <p class="status__statement">{s.statement}</p>
+      <p class="prose status__body">{s.body}</p>
+      <a class="action status__action" href={downloadPath(locale)}>
+        {d.ui.toDownload}
+        <svg viewBox="0 0 24 12" aria-hidden="true"><path d="M0 6h22M17 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.25"></path></svg>
+      </a>
+    </div>
+
+    <div class="colophon">
+      <h3 class="colophon__title engraved">{s.colophonTitle}</h3>
+      <dl class="colophon__list">
+        {
+          s.colophon.map((row) => (
+            <div class="colophon__row">
+              <dt>{row.k}</dt>
+              <dd>{row.v}</dd>
+            </div>
+          ))
+        }
+        <div class="colophon__row">
+          <dt>{s.maintainer}</dt>
+          <dd><a href="https://github.com/MatheusFrazatto" rel="author">Matheus Frazatto</a></dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .status__statement {
+    font-family: var(--font-cat);
+    font-size: clamp(2.5rem, 1.2rem + 4.6vw, 5.5rem);
+    font-weight: 400;
+    font-stretch: 72%;
+    letter-spacing: 0.06em;
+    line-height: 0.95;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .status__body {
+    margin-top: 2rem;
+  }
+  .status__action {
+    margin-top: 2.5rem;
+  }
+
+  .colophon {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2rem);
+    padding-top: clamp(2rem, 4vw, 3rem);
+    border-top: 1px solid var(--line-2);
+  }
+  .colophon__title {
+    grid-column: 1 / span 4;
+    font-size: 0.6875rem;
+    color: var(--ink-2);
+  }
+  .colophon__list {
+    grid-column: 5 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0 clamp(1rem, 2vw, 2rem);
+  }
+  .colophon__row {
+    display: grid;
+    gap: 0.3rem;
+    align-content: start;
+    padding: 0.85rem 0 1rem;
+    border-top: 1px solid var(--line);
+  }
+  .colophon__row dt {
+    font-family: var(--font-cat);
+    font-size: 0.625rem;
+    font-weight: 500;
+    font-stretch: 112%;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .colophon__row dd {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .colophon__row a:hover {
+    color: var(--blue-text);
+  }
+
+  @media (max-width: 960px) {
+    .colophon__title,
+    .colophon__list {
+      grid-column: 1 / -1;
+    }
+    .colophon__title {
+      margin-bottom: 1rem;
+    }
+    .colophon__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 520px) {
+    .colophon__list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

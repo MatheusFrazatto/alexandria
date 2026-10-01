@@ -1,0 +1,34 @@
+---
+// Interior da marca (gradiente, traços, losango) para usar dentro de qualquer <svg> 72×72.
+import { MARK_GEM, MARK_GEM_STROKE, MARK_STOPS, MARK_STROKE, MARK_STROKES } from "../lib/mark";
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+const gradient = `alx-mark-${id}`;
+---
+
+<defs>
+  <linearGradient id={gradient} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="21.176" y2="84.706">
+    {MARK_STOPS.map(([offset, color]) => <stop offset={offset} stop-color={color} />)}
+  </linearGradient>
+</defs>
+<g
+  fill="none"
+  stroke={`url(#${gradient})`}
+  stroke-width={MARK_STROKE.width}
+  stroke-linecap={MARK_STROKE.linecap}
+  stroke-linejoin={MARK_STROKE.linejoin}
+  data-mark-strokes
+>
+  {MARK_STROKES.map((d) => <path d={d} data-mark-stroke />)}
+</g>
+<path
+  d={MARK_GEM}
+  fill={`url(#${gradient})`}
+  stroke={`url(#${gradient})`}
+  stroke-width={MARK_GEM_STROKE}
+  stroke-linejoin="round"
+  data-mark-gem
+/>

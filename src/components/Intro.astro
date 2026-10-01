@@ -1,0 +1,106 @@
+---
+// Abertura: a marca se desenha, o wordmark entra, o catálogo conta até ALX 001 e a cortina sobe.
+// Só aparece com JS (classe intro-on posta no <head>) e nunca com movimento reduzido.
+import Wordmark from "./Wordmark.astro";
+import MarkPaths from "./MarkPaths.astro";
+import type { Dict } from "../i18n";
+
+interface Props {
+  d: Dict;
+}
+const { d } = Astro.props;
+---
+
+<div class="intro" data-intro aria-hidden="true">
+  <div class="intro__inner">
+    <svg class="intro__mark" viewBox="0 0 72 72" focusable="false">
+      <MarkPaths id="intro" />
+    </svg>
+
+    <Wordmark class="intro__wordmark" />
+
+    <div class="intro__meter">
+      <span class="intro__no cat-no" data-intro-no>ALX 000</span>
+      <span class="intro__line"><span class="intro__fill" data-intro-fill></span></span>
+      <span class="intro__label engraved" lang="en">{d.hero.tagline}</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .intro {
+    display: none;
+  }
+  :global(html.intro-on) .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    place-items: center;
+    background: var(--black);
+    /* Rede de segurança: se o módulo não rodar, a abertura some sozinha. */
+    animation: intro-failsafe 0.5s 4.2s var(--ease-out) forwards;
+  }
+  :global(html.intro-on[data-intro-running]) .intro {
+    animation: none;
+  }
+  @keyframes intro-failsafe {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  .intro__inner {
+    display: grid;
+    justify-items: center;
+    gap: 1.75rem;
+    padding-inline: var(--gutter);
+  }
+  .intro__mark {
+    width: clamp(4.5rem, 10vw, 6.5rem);
+    height: auto;
+    overflow: visible;
+  }
+  .intro__inner {
+    font-size: clamp(2.75rem, 1.5rem + 4.6vw, 5rem);
+  }
+  .intro__meter {
+    display: grid;
+    grid-template-columns: auto minmax(8rem, 14rem);
+    align-items: center;
+    gap: 0.6rem 1rem;
+    justify-content: center;
+  }
+  .intro__no {
+    font-size: 1rem;
+    letter-spacing: 0.14em;
+    color: var(--ink-2);
+  }
+  .intro__line {
+    position: relative;
+    display: block;
+    height: 1px;
+    background: var(--line-2);
+    overflow: hidden;
+  }
+  .intro__fill {
+    position: absolute;
+    inset: 0;
+    background: var(--blue);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  .intro__label {
+    grid-column: 1 / -1;
+    justify-self: center;
+    font-size: 0.625rem;
+    color: var(--ink-3);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.intro-on) .intro {
+      display: none;
+    }
+  }
+</style>

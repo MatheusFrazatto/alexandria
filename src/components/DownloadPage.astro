@@ -1,0 +1,251 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import CatHead from "./CatHead.astro";
+import { homePath, t, type Locale } from "../i18n";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const d = t(locale);
+const dl = d.download;
+const releases = (await getCollection("releases"))
+  .map((entry) => entry.data)
+  .filter((r) => r.published)
+  .sort((a, b) => b.catalog.localeCompare(a.catalog, "en", { numeric: true }));
+---
+
+<Base locale={locale} title={d.meta.downloadTitle} description={d.meta.downloadDescription} page="download" current={dl.no}>
+  <section class="section dl" aria-labelledby="versoes-title">
+    <div class="wrap section__grid">
+      <header class="section__head">
+        <CatHead id="versoes-title" no={dl.no} name={dl.name} level={1} />
+      </header>
+      <div class="section__body">
+        <p class="dl__statement">{dl.statement}</p>
+        <p class="prose dl__body">{dl.body}</p>
+      </div>
+
+      <div class="dl__block">
+        <h2 class="dl__title engraved">{dl.tableTitle}</h2>
+        <ol class="dl__rows">
+          {
+            dl.platforms.map((p) => (
+              <li class="dl__row">
+                <span class="dl__no data">{p.no}</span>
+                <span class="dl__os">{p.os}</span>
+                <span class="dl__format">{p.format}</span>
+                <span class="dl__state">
+                  <span class="block" data-state={p.state === "available" ? "approved" : "planned"} aria-hidden="true" />
+                  {p.label}
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <div class="dl__block">
+        <h2 class="dl__title engraved">{dl.releasesTitle}</h2>
+        {
+          releases.length === 0 ? (
+            <div class="dl__empty">
+              <span class="code-strip" aria-hidden="true">
+                {Array.from({ length: 12 }, () => (
+                  <span class="block" />
+                ))}
+              </span>
+              <p>{dl.empty}</p>
+            </div>
+          ) : (
+            <ol class="dl__releases">
+              {releases.map((r) => (
+                <li class="release">
+                  <h3 class="release__head">
+                    <span class="release__no cat-no">{r.catalog}</span>
+                    <span class="release__version data">{r.version}</span>
+                    <span class="release__channel engraved">{r.channel}</span>
+                  </h3>
+                  <p class="release__notes">{r.notes[locale]}</p>
+                  <dl class="release__files">
+                    {r.files.map((f) => (
+                      <div class="release__file">
+                        <dt>
+                          {f.platform} · {f.format}
+                        </dt>
+                        <dd>
+                          <a class="release__link" href={f.url}>
+                            {f.name}
+                          </a>
+                          {f.size && <span class="meta"> · {f.size}</span>}
+                        </dd>
+                        <dd class="data release__sha">
+                          <span class="visually-hidden">{dl.fields.checksum}: </span>
+                          {f.sha256}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </li>
+              ))}
+            </ol>
+          )
+        }
+      </div>
+
+      <p class="dl__back">
+        <a class="action" href={homePath(locale)}>
+          <svg viewBox="0 0 24 12" aria-hidden="true"><path d="M24 6H2M7 1 2 6l5 5" fill="none" stroke="currentColor" stroke-width="1.25"></path></svg>
+          {d.ui.backHome}
+        </a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .dl {
+    border-top: 0;
+    min-height: calc(100svh - 4rem);
+  }
+  .dl__statement {
+    font-family: var(--font-cat);
+    font-size: clamp(2.25rem, 1.2rem + 4vw, 5rem);
+    font-weight: 400;
+    font-stretch: 72%;
+    letter-spacing: 0.06em;
+    line-height: 0.98;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .dl__body {
+    margin-top: 2rem;
+  }
+  .dl__block {
+    grid-column: 5 / -1;
+  }
+  .dl__title {
+    margin-bottom: 1.25rem;
+    font-size: 0.6875rem;
+    color: var(--ink-2);
+  }
+  .dl__row {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 1fr) auto;
+    gap: 0.5rem 1.25rem;
+    align-items: baseline;
+    padding: 1.15rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .dl__row:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .dl__no {
+    color: var(--ink-3);
+    font-size: 0.75rem;
+  }
+  .dl__os {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .dl__state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-cat);
+    font-size: 0.625rem;
+    font-weight: 500;
+    font-stretch: 112%;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+  .dl__state .block {
+    width: 0.6rem;
+    height: 0.6rem;
+  }
+
+  .dl__empty {
+    display: grid;
+    gap: 1.25rem;
+    align-content: center;
+    min-height: 13rem;
+    padding: 2rem clamp(1.25rem, 3vw, 2.5rem);
+    border: 1px dashed var(--line-2);
+    color: var(--ink-2);
+  }
+
+  .release {
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .release__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.25rem;
+    font-weight: inherit;
+  }
+  .release__no {
+    font-size: 1.75rem;
+    letter-spacing: 0.1em;
+  }
+  .release__channel {
+    font-size: 0.625rem;
+    color: var(--blue-text);
+  }
+  .release__notes {
+    margin-top: 0.75rem;
+    max-width: 60ch;
+  }
+  .release__file {
+    display: grid;
+    gap: 0.3rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--line);
+    margin-top: 1rem;
+  }
+  .release__file dt {
+    font-family: var(--font-cat);
+    font-size: 0.625rem;
+    font-weight: 500;
+    font-stretch: 112%;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .release__link {
+    color: var(--ink);
+  }
+  .release__link:hover {
+    color: var(--blue-text);
+  }
+  .release__sha {
+    font-size: 0.6875rem;
+    color: var(--ink-2);
+    overflow-wrap: anywhere;
+  }
+
+  .dl__back {
+    grid-column: 5 / -1;
+  }
+
+  @media (max-width: 960px) {
+    .dl__block,
+    .dl__back {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 640px) {
+    .dl__row {
+      grid-template-columns: 4rem minmax(0, 1fr);
+    }
+    .dl__format,
+    .dl__state {
+      grid-column: 2;
+    }
+  }
+</style>

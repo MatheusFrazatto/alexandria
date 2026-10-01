@@ -1,44 +1,21 @@
-# impeccable-ignore-start
-# Ephemeral output, runtime state, and per-dev overrides.
-# Shared artifacts such as config.json, design.json, and critique reports stay tracked.
-.impeccable/config.local.json
-.impeccable/hook.cache.json
-.impeccable/hook.pending.json
-.impeccable/*.png
-.impeccable/live/server.json
-.impeccable/live/sessions/
-.impeccable/live/previews/
-.impeccable/live/annotations/
-.impeccable/live/cache/
-.impeccable/live/manual-edit-apply-transaction.json
-.impeccable/live/manual-edit-events.jsonl
-.impeccable/live/manual-edit-evidence/
-.impeccable/live/pending-manual-edits.json
-.impeccable/live/deferred-svelte-component-accepts.json
-.impeccable/live/*.png
-# impeccable-ignore-end
-
-# Private Spec Kit feature artifacts.
-specs/
-.specify/
-
-# Local authoring and agent artifacts.
-.agents/
-.codex/
-.impeccable/
-PRODUCT.md
-visual-identity.png
-
-# Local Node verification artifacts.
 node_modules/
 dist/
-build/
-coverage/
+.astro/
+.env
+.env.*
 *.log
-.env*
 .DS_Store
 Thumbs.db
-*.tmp
-*.swp
-.vscode/
-.idea/
+
+# Máquina local
+.claude/settings.local.json
+.impeccable/config.local.json
+.impeccable/review/
+.impeccable/live/
+.impeccable/build/
+
+# Binário do motor do impeccable: o launcher baixa na primeira execução
+.claude/skills/impeccable/scripts/bin/
+# Referências visuais de terceiros (impeccable.style), só para consulta local
+.impeccable/ref/
+.impeccable/mocks/

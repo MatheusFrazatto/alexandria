@@ -1,0 +1,29 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "./sections/Hero.astro";
+import Problem from "./sections/Problem.astro";
+import Mechanism from "./sections/Mechanism.astro";
+import Proof from "./sections/Proof.astro";
+import Surfaces from "./sections/Surfaces.astro";
+import Principles from "./sections/Principles.astro";
+import Roadmap from "./sections/Roadmap.astro";
+import Status from "./sections/Status.astro";
+import { t, type Locale } from "../i18n";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const d = t(locale);
+---
+
+<Base locale={locale} title={d.meta.title} description={d.meta.description} page="home">
+  <Hero d={d} />
+  <Problem d={d} />
+  <Mechanism d={d} />
+  <Proof d={d} />
+  <Surfaces d={d} />
+  <Principles d={d} />
+  <Roadmap d={d} />
+  <Status d={d} locale={locale} />
+</Base>

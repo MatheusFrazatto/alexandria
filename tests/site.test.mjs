@@ -1,144 +1,86 @@
+import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
-import test from "node:test";
-import { auditRelease } from "../scripts/audit-release.mjs";
-import { validateSite } from "../scripts/validate-site.mjs";
+import { existsSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 
-const root = resolve(import.meta.dirname, "..");
-const pagePath = join(root, "docs", "index.html");
-const cssPath = join(root, "docs", "assets", "styles.css");
+import { queryPlot, ridgelines, seeded } from "../src/lib/plots.ts";
+import { pt } from "../src/i18n/pt.ts";
+import { en } from "../src/i18n/en.ts";
 
-function page() {
-  assert.ok(existsSync(pagePath), "docs/index.html deve existir");
-  return readFileSync(pagePath, "utf8");
+test("PRNG com semente é determinístico", () => {
+  const a = seeded(42);
+  const b = seeded(42);
+  const seqA = Array.from({ length: 8 }, a);
+  assert.deepEqual(seqA, Array.from({ length: 8 }, b));
+  assert.ok(seqA.every((n) => n >= 0 && n < 1));
+});
+
+test("evento de consulta: mesma forma a cada build e estados coerentes", () => {
+  const first = queryPlot();
+  assert.deepEqual(first, queryPlot());
+  const kinds = first.spokes.reduce((acc, s) => ({ ...acc, [s.kind]: (acc[s.kind] ?? 0) + 1 }), {});
+  assert.equal(kinds.selected, 3, "três trechos citados");
+  assert.equal(kinds.review, 1, "um trecho marcado para revisão");
+  assert.equal(kinds.quarantine, 1, "um trecho em quarentena");
+  for (const s of first.spokes) {
+    if (s.kind === "selected" || s.kind === "review") assert.ok(s.length < first.ring, "evidência cabe no orçamento");
+  }
+});
+
+test("cristas: estados alinhado e derivado têm a mesma estrutura (necessário para o morph)", () => {
+  const { ridges } = ridgelines();
+  assert.equal(ridges.length, 24);
+  assert.equal(ridges.filter((r) => r.source).length, 1);
+  const tokens = (d) => d.match(/-?\d+(\.\d+)?/g).length;
+  for (const r of ridges) {
+    assert.equal(tokens(r.aligned), tokens(r.drifted));
+    assert.equal(tokens(r.fillAligned), tokens(r.fillDrifted));
+  }
+});
+
+function shape(value) {
+  if (Array.isArray(value)) return value.map(shape);
+  if (value && typeof value === "object") return Object.fromEntries(Object.keys(value).sort().map((k) => [k, shape(value[k])]));
+  return typeof value;
 }
 
-function styles() {
-  assert.ok(existsSync(cssPath), "docs/assets/styles.css deve existir");
-  return readFileSync(cssPath, "utf8");
-}
-
-test("o artefato estático cumpre o contrato integral", () => {
-  assert.deepEqual(validateSite(), []);
+test("PT e EN têm exatamente a mesma estrutura de conteúdo", () => {
+  assert.deepEqual(shape(en), shape(pt));
 });
 
-test("a primeira história explica produto, problema e público em português", () => {
-  const html = page();
-  assert.match(html, /lang="pt-BR"/);
-  assert.match(html, /contexto governado para agentes de IA/i);
-  assert.match(html, /equipes técnicas pequenas/i);
-  assert.match(html, /A mesma fonte\. O contexto certo\. A versão comprovável\./);
-  assert.match(html, /documentação desatualizada/i);
+test("seções têm os mesmos ids e números nos dois idiomas", () => {
+  assert.deepEqual(
+    en.sections.map((s) => [s.id, s.no]),
+    pt.sections.map((s) => [s.id, s.no]),
+  );
 });
 
-test("a narrativa distingue Alexandria das alternativas comuns", () => {
-  const html = page();
-  for (const phrase of ["copiar arquivos", "arquivo de instruções", "wiki", "silo"]) {
-    assert.match(html.toLowerCase(), new RegExp(phrase));
+test("a cópia não promete o que o produto proíbe", () => {
+  const text = JSON.stringify([pt, en]);
+  for (const pattern of [/pronto para produção/i, /production[- ]ready/i, /\bstable\b/i, /oficialmente suportad/i, /officially supported/i]) {
+    assert.doesNotMatch(text, pattern);
   }
-  assert.equal((html.match(/<h1\b/gi) ?? []).length, 1);
-  assert.ok((html.match(/data-i18n=/g) ?? []).length >= 30);
+  const betas = text.match(/\bbeta\b/gi) ?? [];
+  assert.equal(betas.length, 2, "Beta só aparece como 'antes de qualquer Beta' / 'before any Beta'");
 });
 
-test("o mecanismo preserva ordem, autoridade e evidência", () => {
-  const html = page();
-  const mechanism = html.slice(html.indexOf('id="como-funciona"'), html.indexOf('id="principios"'));
-  const phrases = ["Markdown aprovado", "versão imutável", "contexto delimitado", "citação revalidável"];
-  const positions = phrases.map((phrase) => mechanism.indexOf(phrase));
-  assert.ok(positions.every((position) => position >= 0));
-  assert.deepEqual([...positions].sort((a, b) => a - b), positions);
-  assert.match(html, /Git permanece a fonte de autoridade/);
-  assert.match(html, /índice local é descartável/);
+test("artefato publicado passa na validação", { skip: !existsSync("dist/index.html") && "rode npm run build antes" }, () => {
+  const run = spawnSync(process.execPath, ["scripts/validate-site.mjs"], { encoding: "utf8" });
+  assert.equal(run.status, 0, run.stderr || run.stdout);
 });
 
-test("determinismo e ausência de evidência são descritos sem extrapolação", () => {
-  const html = page();
-  assert.match(html, /políticas determinísticas de recorte, ordenação e orçamento/i);
-  assert.match(html, /Quando não existe evidência aprovada/);
-  assert.match(html, /não controla como o host ou o modelo usa essa resposta/i);
-  assert.doesNotMatch(html, /respostas? determinísticas?/i);
-});
-
-test("o estado Alpha é honesto e não oferece conversão", () => {
-  const html = page();
-  assert.match(html, /Alpha por convite/);
-  assert.match(html, /Interfaces podem mudar; ainda não indicado para produção\./);
-  assert.doesNotMatch(html, /<(?:form|input|button|iframe|script)\b/i);
-  assert.doesNotMatch(html, /(?:cadastre-se|entre na lista|baixar agora|preços|fale conosco)/i);
-});
-
-test("a superfície possui semântica e CSS acessíveis", () => {
-  const html = page();
-  const css = styles();
-  for (const landmark of ["<header", "<main", "<footer"]) assert.ok(html.includes(landmark));
-  assert.match(html, /class="skip-link"/);
-  assert.match(html, /aria-label="Alexandria"/);
-  assert.match(html, /aria-hidden="true"/);
-  assert.match(css, /:focus-visible/);
-  assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.doesNotMatch(css, /animation-duration:\s*0\.01ms/);
-  assert.match(css, /prefers-reduced-motion:\s*reduce[\s\S]*\.specimen-state__glyph\s*\{[^}]*animation:\s*none/s);
-});
-
-test("a composição possui reflow móvel e não trunca traduções", () => {
-  const css = styles();
-  assert.match(css, /@media\s*\([^)]*max-width:\s*48rem/);
-  assert.match(css, /clamp\(/);
-  assert.match(css, /overflow-wrap:\s*(?:anywhere|break-word)/);
-  assert.doesNotMatch(css, /text-overflow:\s*ellipsis|line-clamp/i);
-});
-
-test("os símbolos oficiais preservam a mesma geometria arquitetônica", () => {
-  const mark = readFileSync(join(root, "docs", "assets", "mark.svg"), "utf8");
-  const favicon = readFileSync(join(root, "docs", "assets", "favicon.svg"), "utf8");
-  const pathData = (svg) => [...svg.matchAll(/<path\b[^>]*\bd="([^"]+)"/g)].map((match) => match[1]);
-
-  for (const svg of [mark, favicon]) {
-    assert.match(svg, /viewBox="0 0 72 72"/);
-    assert.match(svg, /id="alexandria-blue"/);
-    assert.match(svg, /stroke="url\(#alexandria-blue\)"/);
-    assert.match(svg, /stroke-width="4\.5"/);
+test("a cópia evita marcas de escrita automática (travessão, ponto e vírgula, dois-pontos em prosa)", () => {
+  // Literais de código e dados mantêm sua notação própria.
+  const literals = new Set(["ref: main", "commit: 9f3c2a1"]);
+  const strings = [];
+  const walk = (value) => {
+    if (typeof value === "string") strings.push(value);
+    else if (value && typeof value === "object") Object.values(value).forEach(walk);
+  };
+  walk([pt, en]);
+  for (const s of strings) {
+    assert.doesNotMatch(s, /—/, `travessão em: ${s}`);
+    assert.doesNotMatch(s, /;/, `ponto e vírgula em: ${s}`);
+    if (!literals.has(s)) assert.doesNotMatch(s, /\p{L}: /u, `dois-pontos em: ${s}`);
   }
-
-  assert.deepEqual(pathData(favicon), pathData(mark));
-  assert.match(mark, /M36 4v20/);
-  assert.match(mark, /M6 60V49h60v11M36 49v19/);
-  assert.match(mark, /m36 33 5 5-5 5-5-5z/i);
-});
-
-test("o espécime soletra ALEX sem perder os quatro estados", () => {
-  const html = page();
-  const css = styles();
-  const specimen = html.slice(html.indexOf('class="specimen"'), html.indexOf('</section>', html.indexOf('class="specimen"')));
-  const glyphs = [...specimen.matchAll(/class="specimen-state__glyph"[^>]*>([^<]+)<\/span>/g)]
-    .map((match) => match[1]);
-
-  assert.deepEqual(glyphs, ["A", "L", "E", "X"]);
-  assert.equal((specimen.match(/class="specimen-state__label"/g) ?? []).length, 4);
-  assert.match(css, /\.specimen\s*\{[^}]*container-type:\s*inline-size/s);
-  assert.match(css, /font-size:\s*clamp\(11rem,\s*31cqw,\s*27rem\)/);
-  assert.doesNotMatch(css, /--glyph-scale|scaleX\(/);
-  assert.match(css, /\.specimen-state__glyph\s*\{[^}]*justify-content:\s*center/s);
-  assert.match(css, /@media\s*\(max-width:\s*62rem\)[\s\S]*\.specimen-state__glyph\s*\{[^}]*font-size:\s*clamp\(13rem,\s*32vw,\s*21rem\)/s);
-});
-
-test("a candidata de lançamento cumpre contraste, expansão e desempenho", () => {
-  const report = auditRelease();
-  assert.deepEqual(report.errors, []);
-  assert.ok(report.localization.localizedStrings >= 30);
-  assert.ok(report.localization.expansionFactor >= 1.3);
-  assert.ok(report.performance.estimatedPrincipalContentMs < 2500);
-});
-
-test("o README apresenta o site, o acesso, a stack e o fluxo assistido por IA", () => {
-  const readme = readFileSync(join(root, "README.md"), "utf8");
-  assert.match(readme, /https:\/\/matheusfrazatto\.github\.io\/alexandria-site\//);
-  for (const heading of ["Sobre o site", "Tecnologias", "Desenvolvimento assistido por IA"]) {
-    assert.match(readme, new RegExp(`## ${heading}`));
-  }
-  for (const technology of ["HTML5", "CSS", "Node.js", "GitHub Pages", "Spec Kit", "Impeccable", "Codex"]) {
-    assert.match(readme, new RegExp(technology, "i"));
-  }
-  assert.doesNotMatch(readme, /ainda não possui remote/i);
 });

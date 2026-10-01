@@ -1,0 +1,343 @@
+---
+import Mark from "./Mark.astro";
+import Wordmark from "./Wordmark.astro";
+import { alternatePath, downloadPath, homePath, t, type Locale } from "../i18n";
+
+interface Props {
+  locale: Locale;
+  page: "home" | "download" | "other";
+  current?: string;
+}
+const { locale, page, current } = Astro.props;
+const d = t(locale);
+const home = homePath(locale);
+const onHome = page === "home";
+const sectionHref = (id: string) => (onHome ? `#${id}` : `${home}#${id}`);
+const first = d.sections[0]!;
+const currentNo = current ?? first.no;
+const currentName = current ? d.download.name : first.name;
+const label = (no: string, name: string) => (no ? `${no} · ${name}` : name);
+const altHref = alternatePath(locale, page === "download" ? "download" : "home");
+---
+
+<header class="masthead" data-masthead>
+  <div class="masthead__inner wrap">
+    <a class="masthead__id" href={home} aria-label={d.ui.home}>
+      <Mark id="masthead" class="masthead__mark" />
+      <Wordmark class="masthead__wordmark" />
+      <span class="masthead__no cat-no" data-current-no>{currentNo}</span>
+    </a>
+
+    <nav class="masthead__strip" aria-label={d.ui.stripLabel}>
+      <ol class="strip">
+        {
+          d.sections.map((s, i) => (
+            <li>
+              <a
+                class="strip__link"
+                href={sectionHref(s.id)}
+                data-strip-link={s.id}
+                data-no={s.no}
+                data-name={s.name}
+                aria-current={onHome && i === 0 ? "true" : undefined}
+              >
+                <span class="strip__block" />
+                <span class="visually-hidden">{label(s.no, s.name)}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+      <span class="strip__decode engraved" data-strip-decode aria-hidden="true">{label(currentNo, currentName)}</span>
+    </nav>
+
+    <nav class="masthead__nav" aria-label={d.ui.nav}>
+      <ul class="masthead__links">
+        {
+          d.navLinks.map((l) => (
+            <li>
+              <a href={onHome ? l.href : `${home}${l.href}`}>{l.label}</a>
+            </li>
+          ))
+        }
+        <li>
+          <a href={downloadPath(locale)} aria-current={page === "download" ? "page" : undefined}>
+            {d.downloadLink}
+          </a>
+        </li>
+      </ul>
+      <a class="masthead__lang" href={altHref} hreflang={locale === "en" ? "pt-BR" : "en"} lang={locale === "en" ? "pt-BR" : "en"}>
+        <span aria-hidden="true">
+          <span class="masthead__lang-on">{d.ui.currentLanguageShort}</span>
+          <span class="masthead__lang-sep">/</span>
+          {d.ui.otherLanguageShort}
+        </span>
+        <span class="visually-hidden">{d.ui.otherLanguage}</span>
+      </a>
+    </nav>
+
+    <details class="masthead__menu">
+      <summary class="engraved">{d.ui.index}</summary>
+      <ol class="menu">
+        {
+          d.sections.map((s) => (
+            <li>
+              <a href={sectionHref(s.id)}>
+                <span class="menu__no">{s.no}</span>
+                <span>{s.name}</span>
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href={downloadPath(locale)}>
+            <span class="menu__no">{d.download.no}</span>
+            <span>{d.download.name}</span>
+          </a>
+        </li>
+      </ol>
+    </details>
+  </div>
+</header>
+
+<style>
+  .masthead {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--black) 92%, transparent);
+    border-bottom: 1px solid var(--line);
+  }
+  @supports (backdrop-filter: blur(1px)) {
+    .masthead {
+      background: color-mix(in srgb, var(--black) 78%, transparent);
+      backdrop-filter: blur(14px) saturate(0.6);
+    }
+  }
+
+  .masthead__inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1.5rem;
+    min-height: 4rem;
+  }
+
+  .masthead__id {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    font-size: 1.3rem;
+    justify-self: start;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .masthead__id :global(.masthead__mark) {
+    flex: none;
+    max-width: none;
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+  .masthead__no:empty {
+    display: none;
+  }
+  .masthead__no {
+    white-space: nowrap;
+    padding-left: 0.85rem;
+    border-left: 1px solid var(--line-2);
+    font-size: 0.95rem;
+    letter-spacing: 0.14em;
+    font-stretch: 80%;
+    color: var(--ink-2);
+  }
+
+  .masthead__strip {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+  }
+  /* Sem frestas entre os alvos: o espaço visual entre blocos pertence ao link. */
+  .strip {
+    display: flex;
+  }
+  .strip__link {
+    display: block;
+    padding: 0.6rem 3px 0.6rem 0;
+  }
+  .strip__block {
+    display: block;
+    width: 1.55rem;
+    height: 0.95rem;
+    background: var(--grey-block);
+    transition:
+      background-color 0.4s var(--ease-out),
+      height 0.4s var(--ease-out);
+  }
+  .strip__link:hover .strip__block {
+    background: var(--ink-3);
+  }
+  .strip__link[aria-current="true"] .strip__block {
+    background: var(--blue);
+  }
+  /* Largura fixa: trocar o texto nunca desloca os blocos sob o cursor. */
+  .strip__decode {
+    width: 14.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.6875rem;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .masthead__nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2rem;
+  }
+  .masthead__links {
+    display: flex;
+    gap: 1.6rem;
+  }
+  .masthead__links a,
+  .masthead__lang {
+    font-family: var(--font-cat);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    font-stretch: 112%;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .masthead__links a:hover,
+  .masthead__lang:hover,
+  .masthead__links a[aria-current="page"] {
+    color: var(--ink);
+  }
+  /* Item atual: o mesmo bloco de estado da faixa de código. */
+  .masthead__links a[aria-current="page"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--ink);
+  }
+  .masthead__links a[aria-current="page"]::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--blue);
+  }
+  .masthead__lang {
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--line-2);
+  }
+  .masthead__lang-on {
+    color: var(--ink);
+  }
+  .masthead__lang-sep {
+    color: var(--ink-3);
+    margin-inline: 0.15em;
+  }
+
+  .masthead__menu {
+    display: none;
+    position: relative;
+    justify-self: end;
+  }
+  .masthead__menu summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--line-2);
+    font-size: 0.6875rem;
+  }
+  .masthead__menu summary::-webkit-details-marker {
+    display: none;
+  }
+  .masthead__menu[open] summary {
+    border-color: var(--ink);
+  }
+  .menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    width: min(20rem, calc(100vw - 2 * var(--gutter)));
+    padding: 0.5rem 0;
+    background: var(--black-raised);
+    border: 1px solid var(--line-2);
+  }
+  .menu a {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+  .menu a:hover {
+    background: var(--line);
+  }
+  .menu__no {
+    font-family: var(--font-cat);
+    font-stretch: 75%;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+  }
+
+  @media (max-width: 1320px) {
+    .masthead__links {
+      display: none;
+    }
+    .masthead__inner {
+      grid-template-columns: 1fr auto 1fr auto;
+    }
+    .masthead__menu {
+      display: block;
+    }
+    .masthead__nav {
+      gap: 0;
+    }
+    .strip__decode {
+      min-width: 0;
+    }
+  }
+
+  /* No telefone o Índice (com os números ALX em texto) substitui a faixa. */
+  @media (max-width: 760px) {
+    .masthead__inner {
+      grid-template-columns: 1fr auto auto;
+      gap: 0.75rem;
+    }
+    .masthead__strip {
+      display: none;
+    }
+    .masthead__nav {
+      gap: 0;
+    }
+    .masthead__menu {
+      display: block;
+    }
+  }
+
+  /* No telefone o número ALX atual é o texto equivalente da faixa: ele fica. */
+  @media (max-width: 400px) {
+    .masthead__inner {
+      gap: 0.6rem;
+    }
+    .masthead__id {
+      gap: 0.55rem;
+    }
+    .masthead__no {
+      display: none;
+    }
+    .masthead__id {
+      font-size: 1.15rem;
+    }
+    .masthead__lang {
+      padding-inline: 0.45rem;
+    }
+  }
+</style>
